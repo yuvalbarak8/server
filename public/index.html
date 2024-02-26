@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<form action="http://localhost:80/api/users/login" , method="post">
+<form action="http://localhost:80/api/users" , method="post">
     <label>username:
         <input name="username" />
     </label>
@@ -13,7 +13,14 @@
         password:
         <input name="password">
     </label>
-    <button type="submit" value="submit"></button>
+    <label>valid password:
+        <input name="password_again" />
+    </label>
+    <label>
+        nickname:
+        <input name="nickname">
+    </label>
+    <button type="submit" value="submit">Submit</button>
 </form>
 </body>
 </html>

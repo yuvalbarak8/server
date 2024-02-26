@@ -1,7 +1,9 @@
 import {createUser, getUsers, getUser, login} from "../models/users.js";
 
 function register(req, res){
-    createUser(req.body.username,req.body.password)
+   const create = createUser(req.body.username,req.body.password, req.body.password_again,
+       req.body.nickname)
+    console.log(create)
     console.log(getUsers())
 }
 
