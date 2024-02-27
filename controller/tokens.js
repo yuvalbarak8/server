@@ -13,6 +13,7 @@ class tokens {
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
 
+
             const token = jwt.sign(
                 { userId: user.id },
                 process.env.JWT_SECRET,
