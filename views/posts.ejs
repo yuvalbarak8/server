@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posts</title>
+</head>
+<body>
+<h1>All Posts</h1>
+<ul>
+    <% posts.forEach(post => { %>
+        <li>
+            <img src="<%= post.profilePic%>" alt="" width="50" height="50">
+            <h2><%= post.username %></h2>
+            <p><%= post.text %></p>
+            <img src="<%= post.img %>" alt="Post Image" width="500" height="500"/>
+            <h3>Comments:</h3>
+            <ul>
+                <% post.comments.forEach(comment => { %>
+                    <li>
+                        <strong><%= comment.user %>:</strong> <%= comment.body %>
+                    </li>
+                <% }); %>
+            </ul>
+        </li>
+    <% }); %>
+</ul>
+</body>
+</html>
