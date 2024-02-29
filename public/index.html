@@ -2,31 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
+<button onclick="getAll()">Get all</button><br>
+<input><input><button onclick="create()">Add</button><br>
+<input><button onclick="get()">Get one</button>
+<button onclick="update()">Update</button>
+<button onclick="del()">Delete</button>
+<script>
+    async function getAll() {
+        const users = await fetch('http://localhost:12345/users').then(data => data.json())
+        console.log(users)
+    }
+    async function create() {
+        const users = await fetch('http://localhost:12345/users', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username : document.getElementsByTagName('input')[0].value,
+                password: document.getElementsByTagName('input')[1].value  })
+        }).then(data => data.json());
+        console.log(users);
+    }
 
-<form action="http://localhost:80/api/tokens" method="post">
-    <input name="username">
-    <button type="submit">submit</button>
+    // async function update() {
+    //     // The rest of the function is not visible in the screenshot.
+    //     const articles = await fetch('http://localhost:12345/articles' +document)
+    // }
 
-<form action="http://localhost:80/api/users" , method="post">
-    <label>username:
-        <input name="username" />
-    </label>
-    <label>
-        password:
-        <input name="password">
-    </label>
-    <label>valid password:
-        <input name="password_again" />
-    </label>
-    <label>
-        nickname:
-        <input name="nickname">
-    </label>
-    <button type="submit" value="submit">Submit</button>
-
-</form>
+</script>
 </body>
 </html>
