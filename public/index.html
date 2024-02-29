@@ -28,12 +28,23 @@
         }).then(data => data.json());
         console.log(users);
     }
+    async function del(){
+        console.log("masho");
+        const users = await fetch('http://localhost:12345/users/'+document.getElementsByTagName('input')[2].value, {
+            method: "DELETE",
+        }).then(data => data.json());
+        console.log(users);
 
+    }
+    async function get(){
+        const users = await fetch('http://localhost:12345/users/'+document.getElementsByTagName('input')[2].value, {
+        }).then(data => data.json());
+        console.log(users);
+    }
     // async function update() {
     //     // The rest of the function is not visible in the screenshot.
     //     const articles = await fetch('http://localhost:12345/articles' +document)
     // }
-
 </script>
 </body>
 </html>

@@ -10,6 +10,7 @@ app.use(cors());
 
 const customEnv = require('custom-env');
 customEnv.env(process.env.NODE_ENV, './config');
+
 const users = require('./routes/user');
 
 console.log(process.env.CONNECTION_STRING)
