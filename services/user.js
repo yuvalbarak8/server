@@ -20,5 +20,11 @@ if(!user) return null;
 await user.deleteOne();
 return user;
 }
+const updateUser = async (id, username, password) =>{
+    const user = await getUserById(id);
+    if(!user) return null;
+    await user.updateOne({username: username, password : password});
+    return user;
+}
 
-module.exports = { createUser: createUser, deleteUser : deleteUser, getUserById : getUserById };
+module.exports = { createUser: createUser, deleteUser : deleteUser, getUserById: getUserById, updateUser: updateUser };

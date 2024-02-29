@@ -41,10 +41,18 @@
         }).then(data => data.json());
         console.log(users);
     }
-    // async function update() {
-    //     // The rest of the function is not visible in the screenshot.
-    //     const articles = await fetch('http://localhost:12345/articles' +document)
-    // }
+    async function update() {
+        const users = await fetch('http://localhost:12345/users', {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id : document.getElementsByTagName('input')[2].value,
+                username: document.getElementsByTagName('input')[0].value  ,
+                password: document.getElementsByTagName('input')[1].value })
+        }).then(data => data.json());
+        console.log(users);
+    }
 </script>
 </body>
 </html>
