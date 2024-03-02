@@ -7,10 +7,29 @@
 </head>
 <body>
 <h1>All Posts</h1>
+<form>
+    <input id="display">
+    <input id="img"/>
+    <input id="profile"/>
+    <input id="text"/>
+    <button type="button" onclick="create()">add</button>
+</form>
+<form>
+    <input id="postId">
+    <button type="button" onclick="deletePost()">delete</button>
+</form>
 <ul>
     <% posts.forEach(post => { %>
+        <button type="button" onclick="showEditForm('<%= post._id %>')">Edit</button>
+        <div id="edit-form-<%= post._id %>" style="display: none;">
+            <form>
+                <input type="url" id="image-<%= post._id %>"><br>
+                <textarea id="text-<%= post._id %>" name="content"></textarea><br>
+                <button type="button" onclick="edit('<%= post._id %>')" id="editPost-<%= post._id %>">save</button>
+            </form>
+        </div>
         <li>
-            <img src="<%= post.profilePic%>" alt="" width="50" height="50">
+            <img src="<%= post.profilePic %>" alt="" width="50" height="50">
             <h2><%= post.username %></h2>
             <p><%= post.text %></p>
             <img src="<%= post.img %>" alt="Post Image" width="500" height="500"/>
@@ -25,5 +44,63 @@
         </li>
     <% }); %>
 </ul>
+<script>
+    async function deletePost() {
+        const id = document.getElementsByTagName('input')[4].value;
+        console.log(id)
+        fetch('https://example.com/posts/' + id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer <your_token_here>'
+            }
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error(error));
+    }
+    function showEditForm(postId) {
+        const editForm = document.getElementById(`edit-form-${postId}`);
+
+        // Toggle the display of the form
+        editForm.style.display = editForm.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function edit(id) {
+        console.log('edit')
+        const post = await fetch('http://localhost:8989/posts/' + id, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                img: document.getElementById("image-" + id).value,
+                text: document.getElementById("text-" + id).value
+            })
+        }).then(data => data.json());
+        if (post) {
+            location.reload()
+        }
+    }
+
+    async function create() {
+        console.log('create')
+        const post = await fetch('http://localhost:8989/posts', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                display: document.getElementById("display").value,
+                img: document.getElementById("img").value,
+                profile: document.getElementById("profile").value,
+                text: document.getElementById("text").value
+            })
+        }).then(data => data.json());
+        if (post) {
+            location.reload()
+        }
+    }
+</script>
 </body>
 </html>

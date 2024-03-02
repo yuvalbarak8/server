@@ -8,6 +8,3 @@ const postSchema = new Schema ({
     comments: [{user: String, body: String}]
 })
 module.exports = mongoose.model('Post', postSchema)
-
-
-
