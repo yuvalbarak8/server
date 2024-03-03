@@ -1,7 +1,4 @@
 const mongoose = require('mongoose');
-const url = require("url");
-
-//username, password, nickname, profileimage
 
 const Schema = mongoose.Schema;
 const User = new Schema({
@@ -12,16 +9,15 @@ const User = new Schema({
     password: {
         type: String,
         required: true
-    }
-    // ,
-    // displayname: {
-    //     type: String,
-    //     required: true
-    // },
-    // profileimage:{
-    //     type: url,
-    //     require: false
-    // }
+    },
+    displayName: {
+         type: String,
+         required: true
+    },
+    profileImage:{
+        type: String,
+        required: true
+    },
 });
 
 module.exports = mongoose.model('User', User);

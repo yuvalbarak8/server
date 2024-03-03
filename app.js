@@ -26,7 +26,7 @@ mongoose.connect(process.env.CONNECTION_STRING,
     });
 
 
-app.use('/users', users);
+app.use('/users', users)
 app.use('/posts', posts)
 app.use(express.static('public'))
 
