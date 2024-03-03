@@ -9,6 +9,6 @@ router.route('/')
 
 router.route('/:id')
     .patch(postController.editPost)
-
+    .delete(postController.deletePostById)
 
 module.exports = router

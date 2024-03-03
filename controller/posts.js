@@ -28,7 +28,7 @@ async function editPost(req, res){
         return res.status(404).json({error: ['post not found']})
     res.json(newPost)
 }
-async function deletePost(req, res) {
+async function deletePostById(req, res) {
     const postId = req.params.id
     const post = await posts.deletePost(postId)
     if (!post) {
@@ -36,4 +36,4 @@ async function deletePost(req, res) {
     }
     res.json(post)
 }
-module.exports = {getAllPosts, createPost, editPost, deletePost}
+module.exports = {getAllPosts, createPost, editPost, deletePostById}

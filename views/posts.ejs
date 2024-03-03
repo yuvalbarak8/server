@@ -14,13 +14,10 @@
     <input id="text"/>
     <button type="button" onclick="create()">add</button>
 </form>
-<form>
-    <input id="postId">
-    <button type="button" onclick="deletePost()">delete</button>
-</form>
 <ul>
     <% posts.forEach(post => { %>
         <button type="button" onclick="showEditForm('<%= post._id %>')">Edit</button>
+        <button type="button" onclick="Delete('<%= post._id%>')">Delete</button>
         <div id="edit-form-<%= post._id %>" style="display: none;">
             <form>
                 <input type="url" id="image-<%= post._id %>"><br>
@@ -45,19 +42,17 @@
     <% }); %>
 </ul>
 <script>
-    async function deletePost() {
-        const id = document.getElementsByTagName('input')[4].value;
-        console.log(id)
-        fetch('https://example.com/posts/' + id, {
-            method: 'DELETE',
+    async function Delete(postID) {
+        console.log("delete")
+        const post = await fetch('http://localhost:8989/posts/' + postID, {
+            method: "DELETE",
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer <your_token_here>'
-            }
-        })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error(error));
+                "Content-Type": "application/json"
+            },
+        }).then(data => data.json());
+        if (post) {
+            location.reload()
+        }
     }
     function showEditForm(postId) {
         const editForm = document.getElementById(`edit-form-${postId}`);
