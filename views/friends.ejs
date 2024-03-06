@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Friends</title>
+</head>
+<body>
+    <ul>
+        <% if (friends && friends.length > 0) { %>
+            <% friends.forEach((friend) => { %>
+                <li><%= friend %></li>
+            <% }); %>
+        <% } else { %>
+            <li>No friends found</li>
+        <% } %>
+    </ul>
+    <h1>send friend Request</h1>
+    <form>
+    friend id <input>
+    <button type="button" onclick="send()">Send</button>
+    </form>
+    <script>
+    async function send() {
+            const friend_id = document.getElementsByTagName('input')[0].value;
+            const users = await fetch
+            ('http://localhost:8989/users/'+friend_id+'/friends', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then(data => data.json());
+        }
+    </script>
+</body>
+</html>

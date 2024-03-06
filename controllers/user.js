@@ -1,4 +1,6 @@
 const userService = require('../services/user');
+const posts = require("../services/posts");
+const {getUserById} = require("../services/user");
 
 const createUser = async (req, res) => {
     res.json(await userService.createUser(req.body.username,req.body.password, req.body.token));
@@ -27,6 +29,24 @@ const getUser = async (req, res) =>
     }
     res.json(user);
 }
+const getUserFromToken = async (req, res) =>
+{
+    const user = await userService.getUserByToken(req.params.token);
+    if(!user){
+        console.log("error");
+        return res.status(404).json({errors : ['User not found']})
+    }
+    res.json(user);
+}
+const friendRequest = async (req, res)=>{
+    const user = await userService.getUserByToken(req.session.token);
+    if(!user){
+        console.log("error");
+        return res.status(404).json({errors : ['User not found']})
+    }
+    const request = await userService.makeFriendRequest(user.username, req.params.id);
+    res.json(request);
+}
 const isLoggedIn = async (req, res, next) => {
     if (req.session.token == null)
     {
@@ -34,6 +54,18 @@ const isLoggedIn = async (req, res, next) => {
     }
     else {
         return next();
+    }
+}
+const getFriends = async (req, res) => {
+    try {
+        const friendsList = await userService.getAllFriends(req.params.id, req.session.token);
+        console.log(req.params.id);
+        console.log(req.session.token);
+        console.log('Friends list:', friendsList);
+        res.render('friends.ejs', {friends: friendsList});
+    } catch (error) {
+        console.error('Error fetching friends:', error);
+        res.status(500).send('An error occurred while fetching friends.');
     }
 }
 const checkLogin = async (req, res) => {
@@ -47,4 +79,5 @@ const checkLogin = async (req, res) => {
     res.json("Good Login");
 }
 
-module.exports = { createUser, deleteUser, getUser, updateUser, isLoggedIn, checkLogin}
+module.exports = { createUser, deleteUser, getUser, updateUser, isLoggedIn
+    ,getFriends, checkLogin, getUserFromToken, friendRequest}
