@@ -38,13 +38,13 @@ const isLoggedIn = async (req, res, next) => {
 }
 const checkLogin = async (req, res) => {
     const user = await userService.login(req.body.username, req.body.password);
-    console.log(user);
     if(!user){
-        return res.status(404).json({errors: ['User not found']})
+        res.json("Bad Login");
+        return;
     }
     req.session.token = user;
     console.log("token is: " + req.session.token);
-    res.json(user);
+    res.json("Good Login");
 }
 
 module.exports = { createUser, deleteUser, getUser, updateUser, isLoggedIn, checkLogin}

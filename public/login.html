@@ -6,16 +6,18 @@
 </head>
 <body>
 <h1>Login</h1>
-<form action="http://localhost:8989/users/login" method="post">
+<form>
     username: <input name="username">
     password: <input name="password">
-    <button type="submit">Login</button>
+    <button type="button" onclick="login()">Login</button>
+    <h2 id="loginStatus"></h2>
 </form>
 <h1>Register</h1>
 <form>
     username: <input name="username">
     password: <input name="password">
     <button type="button" onclick="register()">Register</button>
+    <h2 id="registerStatus"></h2>
 </form>
 <script>
     const register = async () => {
@@ -41,8 +43,23 @@
                 token: userTokenResponse
             })
         }).then(data => data.json());
+        document.getElementById('registerStatus').innerText = "Register Success";
 
         console.log(registerResponse);
+    }
+    const login = async () => {
+        const loginResponse = await fetch('http://localhost:8989/users/login', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username:
+                document.getElementsByTagName('input')[0].value,
+                password: document.getElementsByTagName('input')[1].value
+            })
+        }).then(data => data.json());
+        document.getElementById('loginStatus').innerText = loginResponse;
     }
 </script>
 
