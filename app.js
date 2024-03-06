@@ -12,7 +12,8 @@ const customEnv = require('custom-env');
 customEnv.env(process.env.NODE_ENV, './config');
 
 const users = require('./routes/user');
-const posts = require('./routes/posts')
+const posts = require('./routes/posts');
+const token = require('./routes/token');
 
 console.log(process.env.CONNECTION_STRING)
 console.log(process.env.PORT)
@@ -28,6 +29,7 @@ mongoose.connect(process.env.CONNECTION_STRING,
 
 app.use('/users', users)
 app.use('/posts', posts)
+app.use('/token', token);
 app.use(express.static('public'))
 
 app.set('view engine', 'ejs');
