@@ -2,11 +2,18 @@ const express = require('express');
 const app = express();
 
 const bodyParser = require('body-parser');
+const session = require('express-session')
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
 
 const cors = require('cors');
 app.use(cors());
+app.use(express.static('public'))
+app.use(session({
+    secret: 'foo',
+    saveUninitialized: false,
+    resave: false
+}))
 
 const customEnv = require('custom-env');
 customEnv.env(process.env.NODE_ENV, './config');
@@ -30,7 +37,7 @@ mongoose.connect(process.env.CONNECTION_STRING,
 app.use('/users', users)
 app.use('/posts', posts)
 app.use('/token', token);
-app.use(express.static('public'))
+
 
 app.set('view engine', 'ejs');
 app.listen(process.env.PORT);

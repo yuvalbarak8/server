@@ -27,5 +27,24 @@ const getUser = async (req, res) =>
     }
     res.json(user);
 }
+const isLoggedIn = async (req, res, next) => {
+    if (req.session.token == null)
+    {
+        res.redirect('login.html')
+    }
+    else {
+        return next();
+    }
+}
+const checkLogin = async (req, res) => {
+    const user = await userService.login(req.body.username, req.body.password);
+    console.log(user);
+    if(!user){
+        return res.status(404).json({errors: ['User not found']})
+    }
+    req.session.token = user;
+    console.log("token is: " + req.session.token);
+    res.json(user);
+}
 
-module.exports = { createUser, deleteUser, getUser, updateUser}
+module.exports = { createUser, deleteUser, getUser, updateUser, isLoggedIn, checkLogin}

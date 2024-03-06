@@ -5,6 +5,12 @@
     <title>Login</title>
 </head>
 <body>
+<h1>Login</h1>
+<form action="http://localhost:8989/users/login" method="post">
+    username: <input name="username">
+    password: <input name="password">
+    <button type="submit">Login</button>
+</form>
 <h1>Register</h1>
 <form>
     username: <input name="username">
@@ -18,7 +24,8 @@
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ username: document.getElementsByTagName('input')[0].value })
+            body: JSON.stringify({ username:
+                document.getElementsByTagName('input')[2].value })
         }).then(data => data.json());
 
         console.log(userTokenResponse);
@@ -29,8 +36,8 @@
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                username: document.getElementsByTagName('input')[0].value,
-                password: document.getElementsByTagName('input')[1].value,
+                username: document.getElementsByTagName('input')[2].value,
+                password: document.getElementsByTagName('input')[3].value,
                 token: userTokenResponse
             })
         }).then(data => data.json());

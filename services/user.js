@@ -26,5 +26,19 @@ const updateUser = async (id, username, password) =>{
     await user.updateOne({username: username, password : password});
     return user;
 }
+const login = async (username, password) => {
+    const users = await User.find({ username, password });
 
-module.exports = { createUser: createUser, deleteUser : deleteUser, getUserById: getUserById, updateUser: updateUser };
+    if (users.length === 0) {
+        console.log("Bad login");
+        return null;
+    }
+
+    const user = users[0];
+    const userToken = user.token;
+    console.log("Good login");
+    return userToken;
+};
+
+module.exports = { createUser: createUser, deleteUser : deleteUser,
+    getUserById: getUserById, updateUser: updateUser, login : login };
