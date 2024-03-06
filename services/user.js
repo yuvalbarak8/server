@@ -1,8 +1,8 @@
 const User = require('../models/user');
 const mongoose = require("mongoose");
 
-const createUser = async (username, password) => {
-    const user = new User({ username: username, password: password });
+const createUser = async (username, password, token) => {
+    const user = new User({ username: username, password: password, token : token});
     return await user.save();
 };
 

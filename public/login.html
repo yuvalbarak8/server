@@ -5,9 +5,39 @@
     <title>Login</title>
 </head>
 <body>
-<form action="http://localhost:8989/token" method="post">
-    <input name="username">
-    <button type="submit">Login</button>
+<h1>Register</h1>
+<form>
+    username: <input name="username">
+    password: <input name="password">
+    <button type="button" onclick="register()">Register</button>
 </form>
+<script>
+    const register = async () => {
+        const userTokenResponse = await fetch('http://localhost:8989/token', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: document.getElementsByTagName('input')[0].value })
+        }).then(data => data.json());
+
+        console.log(userTokenResponse);
+
+        const registerResponse = await fetch('http://localhost:8989/users', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: document.getElementsByTagName('input')[0].value,
+                password: document.getElementsByTagName('input')[1].value,
+                token: userTokenResponse
+            })
+        }).then(data => data.json());
+
+        console.log(registerResponse);
+    }
+</script>
+
 </body>
 </html>

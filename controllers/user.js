@@ -1,7 +1,7 @@
 const userService = require('../services/user');
 
 const createUser = async (req, res) => {
-    res.json(await userService.createUser(req.body.username,req.body.password));
+    res.json(await userService.createUser(req.body.username,req.body.password, req.body.token));
 };
 const deleteUser = async (req, res)=>{
     const user = await userService.deleteUser(req.params.id);

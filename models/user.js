@@ -14,6 +14,9 @@ const User = new Schema({
     profileImage:{
         type: String,
     },
+    token: {
+        type: String,
+    }
 });
 
 module.exports = mongoose.model('User', User);
