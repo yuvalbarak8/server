@@ -16,6 +16,11 @@ const User = new Schema({
     },
     token: {
         type: String,
+    },
+    friends : {
+        type : [String],
+    }, friends_request : {
+        type : [String]
     }
 });
 
