@@ -39,5 +39,16 @@ async function updatePostImg(postId, newImg) {
 async function deletePost(id) {
     return Post.findByIdAndDelete(id)
 }
-
-module.exports = {getPosts, addPost, updatePost, updatePostImg, deletePost}
+async function like(post, userId){
+    post.likes.push(userId)
+    return post.save()
+}
+async function unlike(post, userId){
+    let i = post.likes.indexOf(userId)
+    post.likes.splice(i, 1)
+    return post.save()
+}
+async function getPost(id) {
+    return Post.findById(id)
+}
+module.exports = {getPosts, addPost, updatePost, updatePostImg, deletePost, like, unlike, getPost}

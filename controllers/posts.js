@@ -36,4 +36,13 @@ async function deletePostById(req, res) {
     }
     res.json(post)
 }
-module.exports = {getAllPosts, createPost, editPost, deletePostById}
+async function clickLike(req, res) {
+    const post = posts.getPost(req.params.pid)
+    const liker = req.params.id
+    if(post.likes.includes(liker))
+        res.json(posts.unlike(post, liker))
+    else
+        res.json(posts.like(post, liker))
+}
+
+module.exports = {getAllPosts, createPost, editPost, deletePostById, clickLike}

@@ -6,10 +6,11 @@ const router = express.Router();
 
 router.route('/')
     .post(postController.createPost)
-    .get(userController.isLoggedIn,postController.getAllPosts)
+    .get(postController.getAllPosts)
 
-router.route('/:id')
+router.route('/posts/:pid')
     .patch(postController.editPost)
     .delete(postController.deletePostById)
+router.route('/:id/posts/:pid').post(postController.clickLike)
 
 module.exports = router

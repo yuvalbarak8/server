@@ -36,11 +36,11 @@
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "authorization": "Bearer " + userTokenResponse
             },
             body: JSON.stringify({
                 username: document.getElementsByTagName('input')[2].value,
                 password: document.getElementsByTagName('input')[3].value,
-                token: userTokenResponse
             })
         }).then(data => data.json());
         document.getElementById('registerStatus').innerText = "Register Success";
