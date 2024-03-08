@@ -5,12 +5,10 @@ const express = require('express')
 const router = express.Router();
 
 router.route('/')
-    .post(postController.createPost)
     .get(postController.getAllPosts)
 
-router.route('/posts/:pid')
+router.route('/:pid')
     .patch(postController.editPost)
     .delete(postController.deletePostById)
-router.route('/:id/posts/:pid').post(postController.clickLike)
 
 module.exports = router

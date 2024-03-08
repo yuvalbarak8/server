@@ -1,6 +1,6 @@
 const Post = require('../models/posts')
 
-async function getPosts({}) {
+function getPosts({}) {
     return Post.find({});
 
 }
@@ -11,9 +11,11 @@ async function addPost(display, text, img, profile) {
         text: text,
         img: img,
         profilePic: profile,
-        comments: []
+        comments: [],
+        likes: []
     });
-    return await newPost.save()
+    console.log(newPost)
+    return newPost.save()
 }
 
 async function updatePost(postId, newText) {
@@ -48,7 +50,7 @@ async function unlike(post, userId){
     post.likes.splice(i, 1)
     return post.save()
 }
-async function getPost(id) {
+function getPost(id) {
     return Post.findById(id)
 }
 module.exports = {getPosts, addPost, updatePost, updatePostImg, deletePost, like, unlike, getPost}

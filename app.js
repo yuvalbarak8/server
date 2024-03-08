@@ -38,6 +38,4 @@ app.use('/users', users)
 app.use('/posts', posts)
 app.use('/token', token);
 
-
-app.set('view engine', 'ejs');
 app.listen(process.env.PORT);

@@ -12,7 +12,7 @@
     <input id="img"/>
     <input id="profile"/>
     <input id="text"/>
-    <button type="button" onclick="create()">add</button>
+    <button type="button" onclick="create('123')">add</button>
 </form>
 <ul>
     <% posts.forEach(post => { %>
@@ -30,7 +30,7 @@
             <h2><%= post.username %></h2>
             <p><%= post.text %></p>
             <img src="<%= post.img %>" alt="Post Image" width="500" height="500"/>
-            <button type="button" onclick="like('<%= post.id%>')">like</button>
+            <button type="button" onclick="like('<%= post._id%>')">like</button>
             <h3>Comments:</h3>
             <ul>
                 <% post.comments.forEach(comment => { %>
@@ -46,12 +46,12 @@
     async function like(pid) {
         console.log('like')
         const id = 123
-        const post = await fetch('http://localhost:8989/' + id + '/posts/' + pid, {
+        const post = await fetch('http://localhost:8989/users/' + id + '/posts/' + pid, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-        })
+        }).then(data => data.json());
     }
     async function Delete(postID) {
         console.log("delete")
@@ -89,9 +89,9 @@
         }
     }
 
-    async function create() {
+    async function create(id) {
         console.log('create')
-        const post = await fetch('http://localhost:8989/posts', {
+        const post = await fetch('http://localhost:8989/users/' + id + '/posts', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

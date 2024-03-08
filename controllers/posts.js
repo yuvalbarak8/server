@@ -3,7 +3,7 @@ const posts = require('../services/posts')
 async function getAllPosts(req, res) {
     try {
         const postsList = await posts.getPosts({});
-        res.render('posts.ejs', {posts: postsList});
+        res.json(postsList);
     } catch (error) {
         console.error('Error fetching posts:', error);
         res.status(500).send('An error occurred while fetching posts.');
@@ -11,10 +11,17 @@ async function getAllPosts(req, res) {
 }
 
 async function createPost(req, res) {
-    res.json(await posts.addPost(req.body.display, req.body.text, req.body.img, req.body.profile))
+    console.log(req.body)
+    const display = req.body.display
+    const text = req.body.text
+    const img = req.body.img
+    const profile = req.body.profile
+    const response = await posts.addPost(display, text, img, profile)
+    console.log(response)
+    res.json(response)
 }
 async function editPost(req, res){
-    const id = req.params.id
+    const id = req.params.pid
     const text = req.body.text
     const img = req.body.img
     let newPost
@@ -29,7 +36,7 @@ async function editPost(req, res){
     res.json(newPost)
 }
 async function deletePostById(req, res) {
-    const postId = req.params.id
+    const postId = req.params.pid
     const post = await posts.deletePost(postId)
     if (!post) {
         res.status(404).json({error: ['post not found']})

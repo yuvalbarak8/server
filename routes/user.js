@@ -1,6 +1,7 @@
 const userController = require('../controllers/user');
 
 const express = require('express');
+const postController = require("../controllers/posts");
 var router = express.Router();
 
 router.route('/:id')
@@ -16,5 +17,11 @@ router.route('/token/:token')
 router.route('/:id/friends')
     .get(userController.getFriends)
     .post(userController.friendRequest);
+router.route('/:id/posts/:pid')
+    .patch(postController.editPost)
+    .delete(postController.deletePostById)
+    .post(postController.clickLike)
+router.route('/:id/posts')
+    .post(postController.createPost)
 
 module.exports = router;
