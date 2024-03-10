@@ -5,18 +5,25 @@ function getPosts({}) {
 
 }
 
-async function addPost(display, text, img, profile) {
-    const newPost = new Post({
-        username: display,
-        text: text,
-        img: img,
-        profilePic: profile,
-        comments: [],
-        likes: []
-    });
-    console.log(newPost)
-    return newPost.save()
+async function addPost(new_display, new_text, new_img, new_profile) {
+    try {
+        const newPost = new Post({
+            username: new_display,
+            text: new_text,
+            img: new_img,
+            profilePic: new_profile,
+            comments: [],
+            likes: []
+        });
+        const savedPost = await newPost.save();
+        return savedPost;
+    } catch (error) {
+        console.error("Error saving post:", error);
+        throw error; // Rethrow the error to handle it elsewhere if needed
+    }
 }
+
+
 
 async function updatePost(postId, newText) {
     const post = await Post.findById(postId);

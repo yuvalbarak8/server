@@ -12,10 +12,10 @@ async function getAllPosts(req, res) {
 
 async function createPost(req, res) {
     console.log(req.body)
-    const display = req.body.display
-    const text = req.body.text
-    const img = req.body.img
-    const profile = req.body.profile
+    const display = String(req.body.display);
+    const text = String(req.body.text);
+    const img = String(req.body.img);
+    const profile = String(req.body.profile);
     const response = await posts.addPost(display, text, img, profile)
     console.log(response)
     res.json(response)

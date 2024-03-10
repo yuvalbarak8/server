@@ -1,5 +1,4 @@
 const userController = require('../controllers/user');
-
 const express = require('express');
 const postController = require("../controllers/posts");
 var router = express.Router();
@@ -22,6 +21,6 @@ router.route('/:id/posts/:pid')
     .delete(postController.deletePostById)
     .post(postController.clickLike)
 router.route('/:id/posts')
-    .post(postController.createPost)
+    .post(postController.createPost);
 
 module.exports = router;
