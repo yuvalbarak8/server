@@ -56,10 +56,15 @@ async function clickLike(req, res) {
     const post = await posts.getPost(req.params.pid)
     const liker = req.params.id
     const userLikedPost = await User.getUserById(liker);
-    if(userLikedPost)
+    if(posts.isLiked(post, userLikedPost))
         res.json(posts.unlike(post, liker))
     else
         res.json(posts.like(post, liker))
 }
+async function isLiked(req, res) {
+    const post = await posts.getPost(req.params.pid)
+    const id = req.params.id
+    res.json(posts.isLiked(post, id))
+}
 
-module.exports = {getAllPosts, createPost, editPost, deletePostById, clickLike}
+module.exports = {getAllPosts, createPost, editPost, deletePostById, clickLike, isLiked}

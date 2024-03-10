@@ -1,4 +1,5 @@
 const Post = require('../models/posts')
+const User = require('./user')
 
 function getPosts({}) {
     return Post.find({});
@@ -58,6 +59,10 @@ async function unlike(post, userId){
     return post.save()
 }
 function getPost(id) {
-    return Post.findById(id)
+    return Post.findById(id);
 }
-module.exports = {getPosts, addPost, updatePost, updatePostImg, deletePost, like, unlike, getPost}
+
+function isLiked(post , user) {
+    return post.likes.includes(user)
+}
+module.exports = {getPosts, addPost, updatePost, updatePostImg, deletePost, like, unlike, getPost, isLiked}
