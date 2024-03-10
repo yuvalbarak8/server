@@ -19,8 +19,9 @@ router.route('/:id/friends')
 router.route('/:id/posts/:pid')
     .patch(postController.editPost)
     .delete(postController.deletePostById)
-    .post(postController.clickLike)
 router.route('/:id/posts')
     .post(postController.createPost);
+router.route('/:id/posts/:pid/likes')
+    .post(postController.clickLike)
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const posts = require('../services/posts')
+const User = require('../services/user')
 
 async function getAllPosts(req, res) {
     try {
@@ -14,11 +15,19 @@ async function createPost(req, res) {
     console.log(req.body)
     const display = String(req.body.display);
     const text = String(req.body.text);
-    const img = String(req.body.img);
+    let img = req.body.img;
     const profile = String(req.body.profile);
-    const response = await posts.addPost(display, text, img, profile)
-    console.log(response)
-    res.json(response)
+    let imgURL;
+    if (img && typeof img !== 'blob') {
+        img = new Blob([img], { type: 'image/jpeg' });
+    }
+    if (img) {
+        imgURL = URL.createObjectURL(img);
+        const response = await posts.addPost(display, text, imgURL, profile)
+        console.log(response)
+        res.json(response)
+        URL.revokeObjectURL(imgURL);
+    }
 }
 async function editPost(req, res){
     const id = req.params.pid
@@ -44,9 +53,10 @@ async function deletePostById(req, res) {
     res.json(post)
 }
 async function clickLike(req, res) {
-    const post = posts.getPost(req.params.pid)
+    const post = await posts.getPost(req.params.pid)
     const liker = req.params.id
-    if(post.likes.includes(liker))
+    const userLikedPost = await User.getUserById(liker);
+    if(userLikedPost)
         res.json(posts.unlike(post, liker))
     else
         res.json(posts.like(post, liker))

@@ -86,5 +86,5 @@ const login = async (username, password) => {
     return userToken;
 };
 
-module.exports = { createUser: createUser, deleteUser : deleteUser, getAllFriends :getAllFriends,
-    getUserById: getUserById,makeFriendRequest: makeFriendRequest, updateUser: updateUser, login : login, getUserByToken : getUserByToken};
+module.exports = { createUser, deleteUser, getAllFriends, getUserById, makeFriendRequest, updateUser,
+    login, getUserByToken};
