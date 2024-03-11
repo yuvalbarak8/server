@@ -69,14 +69,15 @@ const getFriends = async (req, res) => {
     }
 }
 const checkLogin = async (req, res) => {
+    console.log("get login request");
     const user = await userService.login(req.body.username, req.body.password);
     if(!user){
-        res.json("Bad Login");
+        res.json(0);
         return;
     }
-    req.session.token = user;
+    req.session.token = user.token;
     console.log("token is: " + req.session.token);
-    res.json("Good Login");
+    res.json(1);
 }
 
 module.exports = { createUser, deleteUser, getUser, updateUser, isLoggedIn

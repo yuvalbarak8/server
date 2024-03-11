@@ -81,9 +81,8 @@ const login = async (username, password) => {
     }
 
     const user = users[0];
-    const userToken = user.token;
     console.log("Good login");
-    return userToken;
+    return user;
 };
 
 module.exports = { createUser: createUser, deleteUser : deleteUser, getAllFriends :getAllFriends,
