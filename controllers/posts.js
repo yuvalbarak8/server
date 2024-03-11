@@ -57,9 +57,9 @@ async function clickLike(req, res) {
     const liker = req.params.id
     const userLikedPost = await User.getUserById(liker);
     if(posts.isLiked(post, userLikedPost))
-        res.json(posts.unlike(post, liker))
+        return true
     else
-        res.json(posts.like(post, liker))
+        return false
 }
 async function isLiked(req, res) {
     const post = await posts.getPost(req.params.pid)

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {ObjectId} = require("mongodb");
 
 const Schema = mongoose.Schema;
 const User = new Schema({
@@ -9,18 +10,25 @@ const User = new Schema({
         type: String,
     },
     displayName: {
-         type: String,
+        type: String,
     },
-    profileImage:{
+    profileImage: {
         type: String,
     },
     token: {
         type: String,
     },
-    friends : {
-        type : [String],
-    }, friends_request : {
-        type : [String]
+    friends: {
+        type: [{
+            id: ObjectId,
+            ref: User
+        }],
+    },
+    friends_request: {
+        type: [{
+            id: ObjectId,
+            ref: User
+        }]
     }
 });
 
