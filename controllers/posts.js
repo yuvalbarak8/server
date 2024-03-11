@@ -3,6 +3,7 @@ const posts = require('../services/posts')
 async function getAllPosts(req, res) {
     try {
         const postsList = await posts.getPosts({});
+        console.log(postsList)
         res.json(postsList);
     } catch (error) {
         console.error('Error fetching posts:', error);

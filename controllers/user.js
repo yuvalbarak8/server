@@ -3,7 +3,7 @@ const posts = require("../services/posts");
 const {getUserById} = require("../services/user");
 
 const createUser = async (req, res) => {
-    res.json(await userService.createUser(req.body.username,req.body.password, req.body.token));
+    res.json(await userService.createUser(req.body.username,req.body.password, req.body.token, req.body.displayName, req.body.profileImage ));
 };
 const deleteUser = async (req, res)=>{
     const user = await userService.deleteUser(req.params.id);
@@ -77,7 +77,9 @@ const checkLogin = async (req, res) => {
     }
     req.session.token = user.token;
     console.log("token is: " + req.session.token);
-    res.json(1);
+    console.log(user);
+    user.profileImage = null;
+    res.json(user);
 }
 
 module.exports = { createUser, deleteUser, getUser, updateUser, isLoggedIn
