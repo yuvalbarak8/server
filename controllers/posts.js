@@ -1,4 +1,5 @@
 const posts = require('../services/posts')
+const users = require('../services/user')
 
 async function getAllPosts(req, res) {
     try {
@@ -12,15 +13,20 @@ async function getAllPosts(req, res) {
 }
 
 async function createPost(req, res) {
-    console.log(req.body)
+    console.log(req.body);
     const display = String(req.body.display);
     const text = String(req.body.text);
     const img = String(req.body.img);
-    const profile = String(req.body.profile);
-    const response = await posts.addPost(display, text, img, profile)
-    console.log(response)
-    res.json(response)
+
+    // Assuming getUserByUsername returns an object with a profilePicture property
+    const user = await users.getUserByUsername(req.body.display);
+    const profilePicture = await user ? String(user.profileImage) : '';
+
+    const response = await posts.addPost(display, text, img, profilePicture);
+    console.log(response);
+    res.json(response);
 }
+
 async function editPost(req, res){
     const id = req.params.pid
     const text = req.body.text

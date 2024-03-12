@@ -16,6 +16,14 @@ const getUserById = async (id) =>{
     }
     return user;
 }
+const getUserByUsername = async(username) =>{
+    const user = await User.findOne({displayName: username});
+    if(!user){
+        return null;
+    }
+    return user;
+
+}
 const getUserByToken = async (token) =>{
     const user = await User.findOne({token : token });
     if(!user)
@@ -86,5 +94,5 @@ const login = async (username, password) => {
     return user;
 };
 
-module.exports = { createUser: createUser, deleteUser : deleteUser, getAllFriends :getAllFriends,
+module.exports = { getUserByUsername: getUserByUsername, createUser: createUser, deleteUser : deleteUser, getAllFriends :getAllFriends,
     getUserById: getUserById,makeFriendRequest: makeFriendRequest, updateUser: updateUser, login : login, getUserByToken : getUserByToken};
