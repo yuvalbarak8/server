@@ -5,7 +5,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session')
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
 
 const cors = require('cors');
 app.use(cors());
@@ -35,8 +35,8 @@ mongoose.connect(process.env.CONNECTION_STRING,
     });
 
 
-app.use('/users', users)
-app.use('/posts', posts)
-app.use('/token', token);
+app.use('/api/users', users)
+app.use('/api/posts', posts)
+app.use('/api/token', token);
 
 app.listen(process.env.PORT);

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const {ObjectId} = require("mongodb");
 
 const Schema = mongoose.Schema;
 const User = new Schema({
@@ -18,18 +17,8 @@ const User = new Schema({
     token: {
         type: String,
     },
-    friends: {
-        type: [{
-            id: ObjectId,
-            ref: User
-        }],
-    },
-    friends_request: {
-        type: [{
-            id: ObjectId,
-            ref: User
-        }]
-    }
+    friends: [String],
+    friends_request: [String]
 });
 
 module.exports = mongoose.model('User', User);

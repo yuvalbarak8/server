@@ -10,5 +10,6 @@ router.route('/')
 router.route('/:pid')
     .patch(postController.editPost)
     .delete(postController.deletePostById)
-
+router.route(':pid/likes')
+    .post(postController.clickLike)
 module.exports = router

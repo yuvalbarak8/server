@@ -1,6 +1,12 @@
 const tokenService = require('../services/token');
+const jwt = require("jsonwebtoken");
 
-const getTokenByUsername = async (req, res) => {
-    res.json(await tokenService.getToken(req.body.username));
-};
-module.exports = { getTokenByUsername : getTokenByUsername};
+const isLoggedIn = async (req, res, next) => {
+    const token = req.headers['authorization'].split(' ')
+    if (token == null || jwt.verify(token, process.env.KEY)) {
+        res.redirect('login.html')
+    } else {
+        return next();
+    }
+}
+module.exports = {isLoggedIn};

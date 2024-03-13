@@ -24,7 +24,9 @@ async function addPost(new_display, new_text, new_img, new_profile) {
     }
 }
 
-
+async function getPostsForUser(username) {
+    return Post.find({username: username});
+}
 
 async function updatePost(postId, newText) {
     const post = await Post.findById(postId);
@@ -36,6 +38,7 @@ async function updatePost(postId, newText) {
     };
     return Post.updateOne({_id: postId}, updatedPost, {runValidators: true});
 }
+
 async function updatePostImg(postId, newImg) {
     const post = await Post.findById(postId);
     if (!post) return null;
@@ -46,23 +49,39 @@ async function updatePostImg(postId, newImg) {
     };
     return Post.updateOne({_id: postId}, updatedPost, {runValidators: true});
 }
+
 async function deletePost(id) {
     return Post.findByIdAndDelete(id)
 }
-async function like(post, userId){
-    post.likes.push(userId)
+
+async function like(post, username) {
+    post.likes.push(username)
     return post.save()
 }
-async function unlike(post, userId){
-    let i = post.likes.indexOf(userId)
+
+async function unlike(post, username) {
+    let i = post.likes.indexOf(username)
     post.likes.splice(i, 1)
     return post.save()
 }
+
 function getPost(id) {
     return Post.findById(id);
 }
 
-function isLiked(post , user) {
+function isLiked(post, user) {
     return post.likes.includes(user)
 }
-module.exports = {getPosts, addPost, updatePost, updatePostImg, deletePost, like, unlike, getPost, isLiked}
+
+module.exports = {
+    getPosts,
+    addPost,
+    updatePost,
+    updatePostImg,
+    deletePost,
+    like,
+    unlike,
+    getPost,
+    isLiked,
+    getPostsForUser
+}
