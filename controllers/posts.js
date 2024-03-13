@@ -67,5 +67,9 @@ async function clickLike(req, res) {
     }
 }
 
+async function getLikes(req, res) {
+    const post = await posts.getPost(req.params.pid)
+    res.json(posts.getLikes(post))
+}
 
-module.exports = {getAllPosts, createPost, editPost, deletePostById, clickLike, getFriendPosts}
+module.exports = {getAllPosts, createPost, editPost, deletePostById, clickLike, getFriendPosts, getLikes}

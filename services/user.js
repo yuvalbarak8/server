@@ -20,12 +20,6 @@ async function getUserById(id) {
     return user;
 }
 
-async function getUserByToken(token) {
-    const user = await User.findOne({token: token});
-    if (!user) return null;
-    return user;
-}
-
 function getAllFriends(user) {
         return user.friends
 }
@@ -76,5 +70,4 @@ async function denyRequest(friendRequest, user) {
 
 
 module.exports = {
-    createUser, deleteUser, getAllFriends, getUserById, makeFriendRequest, updateUser,
-    getUserByToken, approveRequest, deleteFriend, denyRequest};
+    createUser, deleteUser, getAllFriends, getUserById, makeFriendRequest, updateUser, approveRequest, deleteFriend, denyRequest};

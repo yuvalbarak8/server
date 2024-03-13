@@ -68,11 +68,9 @@ async function unlike(post, username) {
 function getPost(id) {
     return Post.findById(id);
 }
-
-function isLiked(post, user) {
-    return post.likes.includes(user)
+function getLikes(post) {
+    return post.likes
 }
-
 module.exports = {
     getPosts,
     addPost,
@@ -82,6 +80,6 @@ module.exports = {
     like,
     unlike,
     getPost,
-    isLiked,
+    getLikes,
     getPostsForUser
 }

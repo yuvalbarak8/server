@@ -9,7 +9,7 @@ async function createUser(req, res) {
 //delete users/:id
 const deleteUser = async (req, res) => {
     const token = req.headers['authorization'].split(' ')[1]
-    if (req.params.id === await userService.getUserByToken(token)._id) {
+    if (req.params.id === jwt.verify(token, process.env.KEY)._id) {
         const user = await userService.deleteUser(req.params.id);
         if (!user) {
             return res.status(404).json({errors: ['User not found']})
@@ -19,9 +19,12 @@ const deleteUser = async (req, res) => {
 }
 //patch users/:id
 const updateUser = async (req, res) => {
-    const user = await userService.updateUser(req.body._id, req.body.displayName, req.body.profile);
-    console.log(user);
-    if (!user) {
+    const user = await userService.getUserById(req.params._id)
+    const displayName = (req.body.display !== "") ? req.body.display : user.displayName
+    const profile = (req.body.profile !== "") ? req.body.profile : user.profileImage
+    const newUser = await userService.updateUser(req.params._id, displayName, profile);
+    console.log(newUser);
+    if (newUser) {
         return res.status(404).json({errors: ['User not found']})
     }
     res.json(user);
@@ -38,7 +41,7 @@ const getUser = async (req, res) => {
 //post users/:id/friends
 const sendFriendRequest = async (req, res) => {
     const token = req.headers['authorization'].split(' ')[1]
-    const user = await userService.getUserByToken(token)
+    const user = jwt.verify(token, process.env.KEY)
     if (!user) {
         console.log("error");
         return res.status(404).json({errors: ['User not found']})
@@ -48,7 +51,7 @@ const sendFriendRequest = async (req, res) => {
 }
 //patch users/:id/friends/:fid
 async function approveFriend(req, res){
-    const user = await userService.getUserByToken(req.headers.authorization.split(' ')[1])
+    const user = jwt.verify(req.headers.authorization.split(' ')[1], process.env.KEY)
     if (user._id === req.params.id){
         const friend = await userService.getUserById(req.params.fid)
         return res.json(await userService.approveRequest(user, friend.displayName))
@@ -58,7 +61,7 @@ async function approveFriend(req, res){
 //get users/:id/friends
 const getFriends = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1]
-    let user = await userService.getUserByToken(token)
+    let user = jwt.verify(token, process.env.KEY)
     if (req.params.id === user._id) {
         try {
             const friendsList = userService.getAllFriends(user);
