@@ -14,6 +14,10 @@ const postSchema = new Schema ({
     profilePic: {
         type: String,
     },
+    publishDate: {
+        type: Date,
+        default: Date.now()
+    },
     comments: [{
         user: {
             type: Schema.Types.ObjectId,

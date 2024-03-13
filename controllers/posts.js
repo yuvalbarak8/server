@@ -4,7 +4,7 @@ const {unlike, like} = require("../services/posts");
 //get /posts
 async function getAllPosts(req, res) {
     try {
-        const postsList = await posts.getPosts({});
+        const postsList = await posts.getPosts({}).sort((a, b) => a.publishDate - b.publishDate);
         res.json(postsList);
     } catch (error) {
         console.error('Error fetching posts:', error);
