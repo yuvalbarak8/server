@@ -27,6 +27,7 @@ console.log(process.env.CONNECTION_STRING)
 console.log(process.env.PORT)
 
 const mongoose = require("mongoose");
+const {isLogged} = require("./controllers/token");
 mongoose.connect(process.env.CONNECTION_STRING,
     {
         dbName: 'project',
@@ -36,7 +37,7 @@ mongoose.connect(process.env.CONNECTION_STRING,
 
 
 app.use('/api/users', users)
-app.use('/api/posts', posts)
+app.use('/api/posts', isLogged, posts)
 app.use('/api/token', token);
 
 app.listen(process.env.PORT);

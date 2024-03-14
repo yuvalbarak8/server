@@ -7,10 +7,10 @@ async function createUser(username, password, display, profile) {
         password: password,
         displayName: display,
         profileImage: profile,
-        token: jwt.sign({username: username, password: password}, process.env.KEY),
         friends: [],
         friends_request: []
     });
+    user.token = jwt.sign(user)
     return await user.save();
 }
 
