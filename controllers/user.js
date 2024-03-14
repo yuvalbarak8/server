@@ -2,11 +2,11 @@ const userService = require('../services/user')
 const jwt = require('jsonwebtoken')
 const {getUserById} = require("../services/user");
 
+
 //post users/:id/posts
 async function createUser(req, res) {
     res.json(await userService.createUser(req.body.username, req.body.password, req.body.display, req.body.profile));
-}
-//delete users/:id
+
 const deleteUser = async (req, res) => {
     const token = req.headers['authorization'].split(' ')[1]
     if (req.params.id === jwt.verify(token, process.env.KEY)._id) {
@@ -82,6 +82,7 @@ const getFriends = async (req, res) => {
         }
     }
 }
+
 //delete users/:id/friends/:fid
 async function rejectFriend(req, res) {
     let former
@@ -98,6 +99,20 @@ async function rejectFriend(req, res) {
         }
     }
     res.json(former)
+
+const checkLogin = async (req, res) => {
+    console.log("get login request");
+    const user = await userService.login(req.body.username, req.body.password);
+    if(!user){
+        res.json(0);
+        return;
+    }
+    req.session.token = user.token;
+    console.log("token is: " + req.session.token);
+    console.log(user);
+    user.profileImage = null;
+    res.json(user);
+
 }
 
 module.exports = {

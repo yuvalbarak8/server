@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken')
 
+
 async function createUser(username, password, display, profile) {
     const user = new User({
         username: username,
@@ -20,8 +21,17 @@ async function getUserById(id) {
     return user;
 }
 
+
 function getAllFriends(user) {
         return user.friends
+
+const getUserByUsername = async(username) =>{
+    const user = await User.findOne({displayName: username});
+    if(!user){
+        return null;
+    }
+    return user;
+
 }
 
 async function deleteUser(id) {
@@ -69,5 +79,9 @@ async function denyRequest(friendRequest, user) {
 }
 
 
+
 module.exports = {
-    createUser, deleteUser, getAllFriends, getUserById, makeFriendRequest, updateUser, approveRequest, deleteFriend, denyRequest};
+    createUser, deleteUser,getUserByUsername, getAllFriends, getUserById, makeFriendRequest, updateUser, approveRequest, deleteFriend, denyRequest};
+};
+
+

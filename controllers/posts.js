@@ -1,6 +1,5 @@
 const posts = require('../services/posts')
 const User = require('../services/user')
-const {unlike, like} = require("../services/posts");
 //get /posts
 async function getAllPosts(req, res) {
     try {
@@ -19,6 +18,7 @@ async function getFriendPosts(req, res) {
 }
 //post users/:id/posts
 async function createPost(req, res) {
+
     console.log(req.body)
     const token = req.headers.authorization.split(' ')[1]
     const user = await User.getUserByToken(token)
@@ -30,6 +30,25 @@ async function createPost(req, res) {
     console.log(response)
     res.json(response)
 }
+
+/*
+    console.log(req.body);
+    const display = String(req.body.display);
+    const text = String(req.body.text);
+    const img = String(req.body.img);
+
+    // Assuming getUserByUsername returns an object with a profilePicture property
+    const user = await users.getUserByUsername(req.body.display);
+    const profilePicture = await user ? String(user.profileImage) : '';
+
+    const response = await posts.addPost(display, text, img, profilePicture);
+    console.log(response);
+    res.json(response);
+}
+
+async function editPost(req, res){
+*/
+
 //patch users/:id/posts/:pid
 async function editPost(req, res) {
     const id = req.params.pid
