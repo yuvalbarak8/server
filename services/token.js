@@ -1,7 +1,5 @@
-const jwt = require("jsonwebtoken")
-const key = "Am Israel Hai"
-const getToken = async(username) => {
-    const token = await jwt.sign(username, key);
-    return token;
+const User = require('../models/user')
+async function findUser(username, password) {
+    return User.findOne({username: username, password: password})
 }
-module.exports = {getToken : getToken};
+module.exports = {findUser}

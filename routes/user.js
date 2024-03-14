@@ -4,23 +4,27 @@ const postController = require("../controllers/posts");
 var router = express.Router();
 
 router.route('/:id')
+    .get(userController.getUser)
+    .patch(userController.updateUser)
     .delete(userController.deleteUser)
-    .get(userController.getUser);
+
 router.route('/')
     .post(userController.createUser)
-    .put(userController.updateUser);
-router.route('/login')
-    .post(userController.checkLogin);
-router.route('/token/:token')
-    .get(userController.getUserFromToken);
+
 router.route('/:id/friends')
     .get(userController.getFriends)
-    .post(userController.friendRequest);
+    .post(userController.sendFriendRequest)
+
+router.route('/:id/friends/:fid')
+    .patch(userController.approveFriend)
+    .delete(userController.rejectFriend)
+
 router.route('/:id/posts/:pid')
     .patch(postController.editPost)
     .delete(postController.deletePostById)
-    .post(postController.clickLike)
+
 router.route('/:id/posts')
+    .get(postController.getFriendPosts)
     .post(postController.createPost);
 
 module.exports = router;

@@ -1,18 +1,37 @@
 const posts = require('../services/posts')
-const users = require('../services/user')
-
+const User = require('../services/user')
+//get /posts
 async function getAllPosts(req, res) {
     try {
-        const postsList = await posts.getPosts({});
-        console.log(postsList)
+        const postsList = await posts.getPosts({}).sort((a, b) => a.publishDate - b.publishDate);
         res.json(postsList);
     } catch (error) {
         console.error('Error fetching posts:', error);
         res.status(500).send('An error occurred while fetching posts.');
     }
 }
-
+//get users/:id/posts
+async function getFriendPosts(req, res) {
+    const user = await User.getUserById(req.params.id)
+    const postList = await posts.getPostsForUser(user.displayName)
+    res.json(postList)
+}
+//post users/:id/posts
 async function createPost(req, res) {
+
+    console.log(req.body)
+    const token = req.headers.authorization.split(' ')[1]
+    const user = await User.getUserByToken(token)
+    const display = user.displayName
+    const text = String(req.body.text);
+    let img = req.body.img;
+    const profile = user.profileImage;
+    const response = await posts.addPost(display, text, img, profile)
+    console.log(response)
+    res.json(response)
+}
+
+/*
     console.log(req.body);
     const display = String(req.body.display);
     const text = String(req.body.text);
@@ -28,6 +47,10 @@ async function createPost(req, res) {
 }
 
 async function editPost(req, res){
+*/
+
+//patch users/:id/posts/:pid
+async function editPost(req, res) {
     const id = req.params.pid
     const text = req.body.text
     const img = req.body.img
@@ -38,10 +61,11 @@ async function editPost(req, res){
     if (img !== "") {
         newPost = await posts.updatePostImg(id, img)
     }
-    if(!newPost)
+    if (!newPost)
         return res.status(404).json({error: ['post not found']})
     res.json(newPost)
 }
+//delete users/:id/posts/:pid
 async function deletePostById(req, res) {
     const postId = req.params.pid
     const post = await posts.deletePost(postId)
@@ -50,13 +74,21 @@ async function deletePostById(req, res) {
     }
     res.json(post)
 }
+//post posts/:pid/likes
 async function clickLike(req, res) {
-    const post = posts.getPost(req.params.pid)
+    const post = await posts.getPost(req.params.pid)
     const liker = req.params.id
-    if(post.likes.includes(liker))
-        res.json(posts.unlike(post, liker))
-    else
-        res.json(posts.like(post, liker))
+    const userLikedPost = await  User.getUserById(liker);
+    if(posts.isLiked(post, liker)) {
+        res.json(await unlike(post, userLikedPost.displayName))
+    } else {
+        res.json(await like(post, userLikedPost.displayName))
+    }
 }
 
-module.exports = {getAllPosts, createPost, editPost, deletePostById, clickLike}
+async function getLikes(req, res) {
+    const post = await posts.getPost(req.params.pid)
+    res.json(posts.getLikes(post))
+}
+
+module.exports = {getAllPosts, createPost, editPost, deletePostById, clickLike, getFriendPosts, getLikes}

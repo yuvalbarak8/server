@@ -1,21 +1,30 @@
 const User = require('../models/user');
-const mongoose = require("mongoose");
+const jwt = require('jsonwebtoken')
 
-const createUser = async (username, password, token, displayName, profileImage) => {
-    const user = new User({ username: username, password: password, token : token,
-        displayName : displayName, profileImage: profileImage, friends_request : [],
-    friends : []});
+
+async function createUser(username, password, display, profile) {
+    const user = new User({
+        username: username,
+        password: password,
+        displayName: display,
+        profileImage: profile,
+        friends: [],
+        friends_request: []
+    });
+    user.token = jwt.sign(user)
     return await user.save();
-};
+}
 
-const getUserById = async (id) =>{
+async function getUserById(id) {
     const user = await User.findById(id);
-    if(!user)
-    {
-        return null;
-    }
+    if (!user) return null;
     return user;
 }
+
+
+function getAllFriends(user) {
+        return user.friends
+
 const getUserByUsername = async(username) =>{
     const user = await User.findOne({displayName: username});
     if(!user){
@@ -24,75 +33,55 @@ const getUserByUsername = async(username) =>{
     return user;
 
 }
-const getUserByToken = async (token) =>{
-    const user = await User.findOne({token : token });
-    if(!user)
-    {
-        return null;
-    }
-    return user;
-}
-const getAllFriends = async (id, token) => {
-    try {
-        const user = await User.findById(id);
 
-        if (!user || user.token !== token) {
-            // User not found
-            return null;
-        }
-        console.log(user.friends);
-
-        // User found, return the friends list
-        return user.friends;
-    } catch (error) {
-        // Handle database query error
-        console.error('Error while fetching user:', error);
-        return null;
-    }
-};
-const deleteUser = async (id) =>{
-const user = await getUserById(id);
-if(!user) return null;
-await user.deleteOne();
-return user;
-}
-const updateUser = async (id, username, password) =>{
-    const user = await getUserById(id);
-    if(!user) return null;
-    await user.updateOne({username: username, password : password});
-    return user;
+async function deleteUser(id) {
+    return User.findOneAndDelete(id)
 }
 
-const makeFriendRequest = async (theUser, friend) => {
+function updateUser(id, displayName, profile) {
+    return User.findOneAndUpdate(id, {displayName: displayName, profileImage: profile});
+}
+async function approveRequest(user, friendId) {
+    const friend = await User.findById(friendId)
+    await user.friends_request.findOneAndDelete(friend.displayName)
+    user.friends.push(friendName)
+    friend.friends.push(user.displayName)
+    await friend.save()
+    return await user.save()
+}
+
+async function makeFriendRequest(user, friend) {
     const friend_user = await getUserById(friend);
     if (!friend_user) {
-        console.log("friend user not found");
+        console.log("user not found");
         return null;
     }
-
-    try {
-        const result = await friend_user.updateOne(
-            { $push: { friends_request: theUser } }
-        );
-    } catch (error) {
-        console.error("Error updating friend request:", error);
-        return null; // Return null or an appropriate value indicating failure
+    if (!friend_user.friends_request.includes(user.displayName)) {
+        try {
+            const result = await friend_user.updateOne(
+                {$push: {friends_request: user.displayName}}
+            )
+        } catch (error) {
+            console.error("Error updating friend request:", error);
+            return null; // Return null or an appropriate value indicating failure
+        }
     }
+}
+async function deleteFriend(friend, user) {
+    const index = user.friends_request.indexOf(friend)
+    user.friends.splice(index, 1)
+    return user.save()
+}
+async function denyRequest(friendRequest, user) {
+    const index = user.friends_request.indexOf(friendRequest)
+    user.friends_request.splice(index, 1)
+    return user.save()
+}
+
+
+
+module.exports = {
+    createUser, deleteUser,getUserByUsername, getAllFriends, getUserById, makeFriendRequest, updateUser, approveRequest, deleteFriend, denyRequest};
 };
 
 
-const login = async (username, password) => {
-    const users = await User.find({ username, password });
-
-    if (users.length === 0) {
-        console.log("Bad login");
-        return null;
-    }
-
-    const user = users[0];
-    console.log("Good login");
-    return user;
-};
-
-module.exports = { getUserByUsername: getUserByUsername, createUser: createUser, deleteUser : deleteUser, getAllFriends :getAllFriends,
-    getUserById: getUserById,makeFriendRequest: makeFriendRequest, updateUser: updateUser, login : login, getUserByToken : getUserByToken};
