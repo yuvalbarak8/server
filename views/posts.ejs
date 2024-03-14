@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posts</title>
+</head>
+<body>
+<h1>All Posts</h1>
+<form>
+    <input id="display">
+    <input id="img"/>
+    <input id="profile"/>
+    <input id="text"/>
+    <button type="button" onclick="create('123')">add</button>
+</form>
+<ul>
+    <% posts.forEach(post => { %>
+        <button type="button" onclick="showEditForm('<%= post._id %>')">Edit</button>
+        <button type="button" onclick="Delete('<%= post._id%>')">Delete</button>
+        <div id="edit-form-<%= post._id %>" style="display: none;">
+            <form>
+                <input type="url" id="image-<%= post._id %>"><br>
+                <textarea id="text-<%= post._id %>" name="content"></textarea><br>
+                <button type="button" onclick="edit('<%= post._id %>')" id="editPost-<%= post._id %>">save</button>
+            </form>
+        </div>
+        <li>
+            <img src="<%= post.profilePic %>" alt="" width="50" height="50">
+            <h2><%= post.username %></h2>
+            <p><%= post.text %></p>
+            <img src="<%= post.img %>" alt="Post Image" width="500" height="500"/>
+            <button type="button" onclick="like('<%= post._id%>')">like</button>
+            <h3>Comments:</h3>
+            <ul>
+                <% post.comments.forEach(comment => { %>
+                    <li>
+                        <strong><%= comment.user %>:</strong> <%= comment.body %>
+                    </li>
+                <% }); %>
+            </ul>
+        </li>
+    <% }); %>
+</ul>
+<script>
+    async function like(pid) {
+        console.log('like')
+        const id = 123
+        const post = await fetch('http://localhost:8989/users/' + id + '/posts/' + pid, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }).then(data => data.json());
+    }
+    async function Delete(postID) {
+        console.log("delete")
+        const post = await fetch('http://localhost:8989/posts/' + postID, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }).then(data => data.json());
+        if (post) {
+            location.reload()
+        }
+    }
+    function showEditForm(postId) {
+        const editForm = document.getElementById(`edit-form-${postId}`);
+
+        // Toggle the display of the form
+        editForm.style.display = editForm.style.display === 'none' ? 'block' : 'none';
+    }
+
+    async function edit(id) {
+        console.log('edit')
+        const post = await fetch('http://localhost:8989/posts/' + id, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                img: document.getElementById("image-" + id).value,
+                text: document.getElementById("text-" + id).value
+            })
+        }).then(data => data.json());
+        if (post) {
+            location.reload()
+        }
+    }
+
+    async function create(id) {
+        console.log('create')
+        const post = await fetch('http://localhost:8989/users/' + id + '/posts', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                display: document.getElementById("display").value,
+                img: document.getElementById("img").value,
+                profile: document.getElementById("profile").value,
+                text: document.getElementById("text").value
+            })
+        }).then(data => data.json());
+        if (post) {
+            location.reload()
+        }
+    }
+</script>
+</body>
+</html>

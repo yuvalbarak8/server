@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<button onclick="getAll()">Get all</button><br>
+<input><input><button onclick="create()">Add</button><br>
+<input><button onclick="get()">Get one</button>
+<button onclick="update()">Update</button>
+<button onclick="del()">Delete</button>
+<script>
+    async function getAll() {
+        const users = await fetch('http://localhost:12345/users').then(data => data.json())
+        console.log(users)
+    }
+    async function create() {
+        const users = await fetch('http://localhost:12345/users', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username : document.getElementsByTagName('input')[0].value,
+                password: document.getElementsByTagName('input')[1].value  })
+        }).then(data => data.json());
+        console.log(users);
+    }
+    async function del(){
+        console.log("masho");
+        const users = await fetch('http://localhost:12345/users/'+document.getElementsByTagName('input')[2].value, {
+            method: "DELETE",
+        }).then(data => data.json());
+        console.log(users);
+
+    }
+    async function get(){
+        const users = await fetch('http://localhost:12345/users/'+document.getElementsByTagName('input')[2].value, {
+        }).then(data => data.json());
+        console.log(users);
+    }
+    async function update() {
+        const users = await fetch('http://localhost:12345/users', {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id : document.getElementsByTagName('input')[2].value,
+                username: document.getElementsByTagName('input')[0].value  ,
+                password: document.getElementsByTagName('input')[1].value })
+        }).then(data => data.json());
+        console.log(users);
+    }
+</script>
+</body>
+</html>
