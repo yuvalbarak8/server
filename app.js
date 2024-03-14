@@ -43,7 +43,7 @@ mongoose.connect(process.env.CONNECTION_STRING,
 
 
 app.use('/api/users', users)
-app.use('/api/posts', isLogged, posts)
+app.use( '/api/posts', isLogged, posts)
 app.use('/api/token', token);
 
 app.listen(process.env.PORT);
