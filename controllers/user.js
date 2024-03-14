@@ -2,6 +2,7 @@ const userService = require('../services/user')
 const jwt = require('jsonwebtoken')
 const {getUserById} = require("../services/user");
 
+
 //post users/:id/posts
 async function createUser(req, res) {
     res.json(await userService.createUser(req.body.username, req.body.password, req.body.display, req.body.profile))
@@ -74,15 +75,15 @@ const getFriends = async (req, res) => {
             res.status(500).send('An error occurred while fetching friends.');
         }
     }
-    if (user.friends.includes(await getUserById(req.params.id).displayName)) {
-        try {
-            user = await userService.getUserById(req.params.id)
-            const friends = userService.getAllFriends(user)
-            res.json(friends)
-        } catch (error) {
-            console.error('Error fetching friends:', error);
-            res.status(500).send('An error occurred while fetching friends.');
-        }
+}
+if (user.friends.includes(await getUserById(req.params.id).displayName)) {
+    try {
+        user = await userService.getUserById(req.params.id)
+        const friends = userService.getAllFriends(user)
+        res.json(friends)
+    } catch (error) {
+        console.error('Error fetching friends:', error);
+        res.status(500).send('An error occurred while fetching friends.');
     }
 }
 
@@ -104,6 +105,20 @@ async function rejectFriend(req, res) {
     res.json(former)
 }
 
+const checkLogin = async (req, res) => {
+    console.log("get login request");
+    const user = await userService.login(req.body.username, req.body.password);
+    if (!user) {
+        res.json(0);
+        return;
+    }
+    req.session.token = user.token;
+    console.log("token is: " + req.session.token);
+    console.log(user);
+    user.profileImage = null;
+    res.json(user);
+
+}
 
 module.exports = {
     createUser, deleteUser, getUser, updateUser, getFriends, sendFriendRequest, approveFriend, rejectFriend
