@@ -75,6 +75,7 @@ const getFriends = async (req, res) => {
         } catch (error) {
             console.error('Error fetching friends:', error);
             res.status(500).send('An error occurred while fetching friends.');
+
         }
     }
     if (user.friends.includes(await getUserById(req.params.id).displayName)) {
@@ -123,13 +124,5 @@ const checkLogin = async (req, res) => {
 }
 
 module.exports = {
-    createUser,
-    checkLogin,
-    deleteUser,
-    getUser,
-    updateUser,
-    getFriends,
-    sendFriendRequest,
-    approveFriend,
-    rejectFriend
+    createUser, deleteUser, getUser, updateUser, getFriends, sendFriendRequest, approveFriend, rejectFriend
 }

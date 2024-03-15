@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const tokenService = require('../services/token')
+
 async function login(req, res) {
     const user = await tokenService.findUser(req.body.username, req.body.password)
     if (user) {
@@ -10,12 +11,15 @@ async function login(req, res) {
         res.status(404)
     }
 }
+
 async function isLogged(req, res, next) {
-    if(req.headers.authorization) {
+    if (req.headers.authorization) {
         try {
             const token = req.headers.authorization.split(' ')[1]
             const data = jwt.verify(token, process.env.KEY)
-            return next()
+            if (data._id === req.params.id) {
+                return next()
+            }
         } catch (err) {
             return res.status(401).send('invalid token')
         }
@@ -23,4 +27,5 @@ async function isLogged(req, res, next) {
         return res.status(403).send('token required')
     }
 }
+
 module.exports = {login, isLogged};
