@@ -1,11 +1,12 @@
-const userService = require('../services/user')
+const userService = require("../services/user")
 const jwt = require('jsonwebtoken')
 const {getUserById} = require("../services/user");
 
 
 //post users/:id/posts
 async function createUser(req, res) {
-    res.json(await userService.createUser(req.body.username, req.body.password, req.body.display, req.body.profile))
+    console.log(userService);
+    res.json(await userService.createUser(req.body.username, req.body.password, req.body.display, req.body.profile));
 }
 
 const deleteUser = async (req, res) => {
@@ -18,6 +19,7 @@ const deleteUser = async (req, res) => {
         res.json(user);
     }
 }
+
 //patch users/:id
 const updateUser = async (req, res) => {
     const user = await userService.getUserById(req.params._id)
@@ -73,17 +75,18 @@ const getFriends = async (req, res) => {
         } catch (error) {
             console.error('Error fetching friends:', error);
             res.status(500).send('An error occurred while fetching friends.');
+
         }
     }
-}
-if (user.friends.includes(await getUserById(req.params.id).displayName)) {
-    try {
-        user = await userService.getUserById(req.params.id)
-        const friends = userService.getAllFriends(user)
-        res.json(friends)
-    } catch (error) {
-        console.error('Error fetching friends:', error);
-        res.status(500).send('An error occurred while fetching friends.');
+    if (user.friends.includes(await getUserById(req.params.id).displayName)) {
+        try {
+            user = await userService.getUserById(req.params.id)
+            const friends = userService.getAllFriends(user)
+            res.json(friends)
+        } catch (error) {
+            console.error('Error fetching friends:', error);
+            res.status(500).send('An error occurred while fetching friends.');
+        }
     }
 }
 

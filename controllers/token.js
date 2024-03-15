@@ -4,7 +4,9 @@ const tokenService = require('../services/token')
 async function login(req, res) {
     const user = await tokenService.findUser(req.body.username, req.body.password)
     if (user) {
-        res.status(200).send(user.token)
+        console.log("hello")
+        res.status(200).json(user[0])
+        console.log(user[0])
     } else {
         res.status(404)
     }

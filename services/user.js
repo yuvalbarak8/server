@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken')
+const {env} = require("custom-env");
 
 
 async function createUser(username, password, display, profile) {
@@ -11,7 +12,7 @@ async function createUser(username, password, display, profile) {
         friends: [],
         friends_request: []
     });
-    user.token = jwt.sign({user}, process.env.KEY)
+   user.token = jwt.sign({user}, process.env.KEY);
     return await user.save();
 }
 
@@ -93,6 +94,7 @@ async function denyRequest(friendRequest, user) {
 module.exports = {
     createUser, deleteUser,getUserByUsername, getAllFriends, getUserById, makeFriendRequest, updateUser, approveRequest, deleteFriend, denyRequest
 }
+
 
 
 
