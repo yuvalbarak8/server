@@ -1,7 +1,7 @@
 const posts = require('../services/posts')
 const User = require('../services/user')
-const jwt = require("jsonwebtoken");
-const {getUserByUsername} = require("../services/user");
+
+
 //get /posts
 async function getAllPosts(req, res) {
     try {
