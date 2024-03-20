@@ -1,7 +1,5 @@
 const userService = require("../services/user")
 const jwt = require('jsonwebtoken')
-const {getUserById} = require("../services/user");
-
 
 //post users/:id/posts
 async function createUser(req, res) {
@@ -11,7 +9,8 @@ async function createUser(req, res) {
 
 const deleteUser = async (req, res) => {
     const token = req.headers['authorization'].split(' ')[1]
-    if (req.params.id === jwt.verify(token, process.env.KEY)._id) {
+    const username = jwt.verify(token, process.env.KEY).username
+    if (req.params.id === String(await userService.getUserByUsername(username)._id)) {
         const user = await userService.deleteUser(req.params.id);
         if (!user) {
             return res.status(404).json({errors: ['User not found']})
@@ -34,7 +33,7 @@ const updateUser = async (req, res) => {
 }
 //get users/:id
 const getUser = async (req, res) => {
-    const user = await userService.getUserById(req.params._id);
+    const user = await userService.getUserById(req.params.id);
     if (!user) {
         console.log("error");
         return res.status(404).json({errors: ['User not found']})
@@ -44,21 +43,24 @@ const getUser = async (req, res) => {
 //post users/:id/friends
 const sendFriendRequest = async (req, res) => {
     const token = req.headers['authorization'].split(' ')[1]
-    const user = jwt.verify(token, process.env.KEY)
+    const username = jwt.verify(token, process.env.KEY).username
+    const user = await userService.getUserByUsername(username)
     if (!user) {
         console.log("error");
         return res.status(404).json({errors: ['User not found']})
     }
-    const request = await userService.makeFriendRequest(user, req.params.id);
+    const request = await userService.makeFriendRequest(user._id, req.params.id);
     res.json(request);
 }
 
 //patch users/:id/friends/:fid
 async function approveFriend(req, res) {
-    const user = jwt.verify(req.headers.authorization.split(' ')[1], process.env.KEY)
-    if (user._id === req.params.id) {
+    const username = jwt.verify(req.headers.authorization.split(' ')[1], process.env.KEY).username
+    const user = await userService.getUserByUsername(username)
+    if (String(user._id) === req.params.id) {
         const friend = await userService.getUserById(req.params.fid)
-        return res.json(await userService.approveRequest(user, friend.displayName))
+        if (!user.friends.includes(req.params.fid))
+            return res.json(await userService.approveRequest(user, friend._id))
     }
     return null
 }
@@ -66,19 +68,9 @@ async function approveFriend(req, res) {
 //get users/:id/friends
 const getFriends = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1]
-    let user = jwt.verify(token, process.env.KEY)
-    if (req.params.id === user._id) {
-        try {
-            const friendsList = userService.getAllFriends(user);
-            console.log('Friends list:', friendsList);
-            res.json(friendsList)
-        } catch (error) {
-            console.error('Error fetching friends:', error);
-            res.status(500).send('An error occurred while fetching friends.');
-
-        }
-    }
-    if (user.friends.includes(await getUserById(req.params.id).displayName)) {
+    const username = jwt.verify(token, process.env.KEY).username
+    let user = await userService.getUserByUsername(username)
+    if (user.friends.includes(String(await userService.getUserById(req.params.id)._id)) || String(user._id) === req.params.id) {
         try {
             user = await userService.getUserById(req.params.id)
             const friends = userService.getAllFriends(user)
@@ -94,34 +86,18 @@ const getFriends = async (req, res) => {
 async function rejectFriend(req, res) {
     let former
     const friend = await userService.getUserById(req.params.fid)
-    const user = await userService.getUserById(req.headers.authorization.split(' ')[1])
-    if (user._id === req.params.id) {
-        if (user.friends.includes(friend.displayName)) {
-            await userService.deleteFriend(user.displayName, friend)
-            former = await userService.deleteFriend(friend.displayName, user)
-        } else if (user.friends_request.includes(friend.displayName)) {
-            former = await userService.denyRequest(friend.displayName, user)
-        } else {
-            res.status(500).send('An error occurred while deleting friends.');
-        }
+    const user = await userService.getUserById(req.params.id)
+    if (user.friends.includes(friend._id)) {
+        await userService.deleteFriend(user._id, friend)
+        former = await userService.deleteFriend(friend._id, user)
+    } else if (user.friends_request.includes(friend._id)) {
+        former = await userService.denyRequest(friend._id, user)
+    } else {
+        res.status(500).send('An error occurred while deleting friends.');
     }
     res.json(former)
 }
 
-const checkLogin = async (req, res) => {
-    console.log("get login request");
-    const user = await userService.login(req.body.username, req.body.password);
-    if (!user) {
-        res.json(0);
-        return;
-    }
-    req.session.token = user.token;
-    console.log("token is: " + req.session.token);
-    console.log(user);
-    user.profileImage = null;
-    res.json(user);
-
-}
 
 module.exports = {
     createUser, deleteUser, getUser, updateUser, getFriends, sendFriendRequest, approveFriend, rejectFriend
