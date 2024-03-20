@@ -53,6 +53,9 @@ async function updatePostImg(postId, newImg) {
 async function deletePost(id) {
     return Post.findByIdAndDelete(id)
 }
+function isLiked(post, liker) {
+    return post.likes.includes(liker._id)
+}
 
 async function like(post, username) {
     post.likes.push(username)
@@ -81,5 +84,6 @@ module.exports = {
     unlike,
     getPost,
     getLikes,
-    getPostsForUser
+    getPostsForUser,
+    isLiked
 }

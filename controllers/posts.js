@@ -1,7 +1,7 @@
 const posts = require('../services/posts')
 const User = require('../services/user')
-const jwt = require("jsonwebtoken");
-const {getUserByUsername} = require("../services/user");
+
+
 //get /posts
 async function getAllPosts(req, res) {
     try {
@@ -31,12 +31,9 @@ async function createPost(req, res) {
     const display = String(req.body.display);
     const text = String(req.body.text);
     const img = String(req.body.img);
+    const profile = String(req.body.profile)
 
-    // Assuming getUserByUsername returns an object with a profilePicture property
-    const user = await User.getUserByUsername(req.body.display);
-    const profilePicture = await user ? String(user.profileImage) : '';
-
-    const response = await posts.addPost(display, text, img, profilePicture);
+    const response = await posts.addPost(display, text, img, profile);
     console.log(response);
     res.json(response);
 }
@@ -69,12 +66,12 @@ async function deletePostById(req, res) {
 //post posts/:pid/likes
 async function clickLike(req, res) {
     const post = await posts.getPost(req.params.pid)
-    const liker = req.params.id
+    const liker = req.body.id
     const userLikedPost = await  User.getUserById(liker);
-    if(posts.isLiked(post, liker)) {
-        res.json(await unlike(post, userLikedPost.displayName))
+    if(posts.isLiked(post, userLikedPost)) {
+        res.json(await posts.unlike(post, userLikedPost._id))
     } else {
-        res.json(await like(post, userLikedPost.displayName))
+        res.json(await posts.like(post, userLikedPost._id))
     }
 }
 

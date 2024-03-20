@@ -6,11 +6,7 @@ const router = express.Router();
 router.route('/')
     .get(postController.getAllPosts)
 
-router.route('/:pid')
-    .patch(postController.editPost)
-    .delete(postController.deletePostById)
-
-router.route(':pid/likes')
+router.route('/:pid/likes')
     .post(postController.clickLike)
     .get(postController.getLikes)
 
