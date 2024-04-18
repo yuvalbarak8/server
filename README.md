@@ -47,6 +47,3 @@ Itamar's Contribution:
 Created the base for the server and working with MongoDB, creating users.
 
 
-
-Note
-All interactions with the API return data in JSON format, except for the root of our server (http://www.foo.com), which redirects to the application's homepage and serves HTML content.
