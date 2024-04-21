@@ -1,9 +1,37 @@
 const express = require('express');
 const app = express();
-
-
 const bodyParser = require('body-parser');
 const session = require('express-session')
+const net = require('net');  // Include for TCP connection
+
+
+// TCP client function to initialize BloomFilter
+function initializeBloomFilter() {
+    const client = new net.Socket();
+    client.connect(5555, '127.0.0.1', () => {
+        console.log('Connected to TCP server to initialize BloomFilter');
+        // Send the initialization message
+        // For example, sending size of the BloomFilter and hash function counts
+        client.write('100 3 5'); // assuming 100 is the size, 3 and 5 are hash function iterations
+    });
+
+    client.on('data', (data) => {
+        console.log('Received: ' + data.toString());
+        client.destroy(); // kill client after server's response
+    });
+
+    client.on('close', () => {
+        console.log('Connection to TCP server closed');
+    });
+
+    client.on('error', (err) => {
+        console.error('Connection to TCP server error:', err);
+    });
+}
+
+// Initialize BloomFilter when the server starts
+initializeBloomFilter();
+
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(express.json());

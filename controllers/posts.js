@@ -27,14 +27,14 @@ async function getFriendPosts(req, res) {
 }
 
 async function createPost(req, res) {
-    console.log(req.body);
+   // console.log(req.body);
     const display = String(req.body.display);
     const text = String(req.body.text);
     const img = String(req.body.img);
     const profile = String(req.body.profile)
 
     const response = await posts.addPost(display, text, img, profile);
-    console.log(response);
+  //  console.log(response);
     res.json(response);
 }
 

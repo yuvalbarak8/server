@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 
 //post users/:id/posts
 async function createUser(req, res) {
-    console.log(userService);
+    //console.log(userService);
     res.json(await userService.createUser(req.body.username, req.body.password, req.body.display, req.body.profile));
 }
 
