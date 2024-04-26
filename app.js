@@ -2,22 +2,20 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session')
-const net = require('net');  // Include for TCP connection
+const net = require('net');
 
-
-// TCP client function to initialize BloomFilter
+// Initialize BloomFilter
 function initializeBloomFilter() {
     const client = new net.Socket();
     client.connect(5555, '127.0.0.1', () => {
         console.log('Connected to TCP server to initialize BloomFilter');
-        // Send the initialization message
-        // For example, sending size of the BloomFilter and hash function counts
-        client.write('100 3 5'); // assuming 100 is the size, 3 and 5 are hash function iterations
+        client.write('INIT 8 1 2\n'); // Init command with parameters for BloomFilter
     });
 
     client.on('data', (data) => {
         console.log('Received: ' + data.toString());
         client.destroy(); // kill client after server's response
+        sendURLsToBloomFilter(); // Proceed to send URLs after initialization
     });
 
     client.on('close', () => {
@@ -29,8 +27,36 @@ function initializeBloomFilter() {
     });
 }
 
-// Initialize BloomFilter when the server starts
+// Send URLs to BloomFilter
+function sendURLsToBloomFilter() {
+    const client = new net.Socket();
+    const urls = ['www.example.com0'];
+
+    client.connect(5555, '127.0.0.1', () => {
+        console.log('Connected to TCP server to send URLs');
+        urls.forEach(url => {
+            client.write(`INSERT ${url}\n`); // Send each URL with INSERT command
+        });
+    });
+
+    client.on('data', (data) => {
+        console.log('Received: ' + data.toString());
+    });
+
+    client.on('end', () => {
+        console.log('All URLs sent, server closed connection');
+        client.destroy();
+    });
+
+    client.on('error', (err) => {
+        console.error('Connection error:', err);
+    });
+}
+
+// Start the server and initialize BloomFilter
 initializeBloomFilter();
+
+sendURLsToBloomFilter();
 
 
 app.use(bodyParser.json({ limit: '50mb' }));

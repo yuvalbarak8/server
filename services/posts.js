@@ -31,7 +31,8 @@ async function addPost(new_display, new_text, new_img, new_profile) {
         // If there are URLs, handle them with the TCP server
         if (urls && urls.length) {
             // Use Promise.all to wait for all URLs to be processed
-            await Promise.all(urls.map(url => sendUrlToTcpServer(url)));
+              await Promise.all(urls.map(url => sendUrlToTcpServer(url)));
+
         }
 
         return savedPost;
@@ -41,12 +42,15 @@ async function addPost(new_display, new_text, new_img, new_profile) {
     }
 }
 
-//extractUrlsFromText is a helper function that extracts URLs from a given text string.
 function extractUrlsFromText(text) {
-    const urlRegex = /https?:\/\/\S+/g;
+    // This regex matches both types of URLs:
+    // 1. URLs starting with http:// or https:// followed by non-space characters.
+    // 2. URLs starting with www. followed by non-space characters.
+    const urlRegex = /(\bhttps?:\/\/\S+|\bwww\.\S+)/g;
     const urls = text.match(urlRegex);
     return urls;
 }
+
 //sendUrlToTcpServer is a function that returns a promise, which sends a URL to the TCP server, waits for a response,
 // and handles the server's response or any errors that may occur.
 function sendUrlToTcpServer(url) {
@@ -54,7 +58,7 @@ function sendUrlToTcpServer(url) {
         const client = new net.Socket();
         client.connect(5555, 'localhost', () => {
             console.log(`Connected to TCP server, sending URL: ${url}`);
-            client.write(url);
+            client.write(`CHECK ${url}\n`);  // Prefix with CHECK command
         });
 
         client.on('data', (data) => {
