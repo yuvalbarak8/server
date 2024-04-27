@@ -7,7 +7,7 @@ const net = require('net');
 // Initialize BloomFilter
 function initializeBloomFilter() {
     const client = new net.Socket();
-    client.connect(5555, '127.0.0.1', () => {
+    client.connect(5555, '192.168.64.128', () => {
         console.log('Connected to TCP server to initialize BloomFilter');
         client.write('INIT 8 1 2\n'); // Init command with parameters for BloomFilter
     });
@@ -32,10 +32,10 @@ function sendURLsToBloomFilter() {
     const client = new net.Socket();
     const urls = ['www.example.com0'];
 
-    client.connect(5555, '127.0.0.1', () => {
+    client.connect(5555, '192.168.64.128', () => {
         console.log('Connected to TCP server to send URLs');
         urls.forEach(url => {
-            client.write(`INSERT ${url}\n`); // Send each URL with INSERT command
+            client.write(`INSERT ${url}`); // Send each URL with INSERT command
         });
     });
 
