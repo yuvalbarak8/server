@@ -54,9 +54,9 @@ function extractUrlsFromText(text) {
 function sendUrlToTcpServer(url) {
     return new Promise((resolve, reject) => {
         const client = new net.Socket();
-        client.connect(5555, '192.168.64.128', () => {
+        client.connect(5555, "127.0.0.1", () => {
             console.log(`Connected to TCP server, sending URL: ${url}`);
-            client.write(`CHECK ${url}\n`);  // Prefix with CHECK command
+            client.write(`${url}\n`);  // Prefix with CHECK command
         });
 
         client.on('data', (data) => {
