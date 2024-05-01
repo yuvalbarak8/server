@@ -22,7 +22,7 @@ async function addPost(new_display, new_text, new_img, new_profile) {
                 const responses = await Promise.all(urls.map(url => sendUrlToTcpServer(url)));
 
                 // Check if any of the responses contain "true true"
-                const containsTrueTrue = responses.some(response => response === "true false");
+                const containsTrueTrue = responses.some(response => response === "true true");
 
                 if (containsTrueTrue) {
                     // Do something if "true true" is found in any response
