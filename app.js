@@ -7,15 +7,16 @@ const net = require('net');
 // Initialize BloomFilter
 function initializeBloomFilter() {
     const client = new net.Socket();
-    client.connect(5555, "192.168.64.128", () => {
+    client.connect(5555, "192.168.75.128", () => {
         console.log('Connected to TCP server to initialize BloomFilter');
-        client.write('8 1 2\n'); // Init command with parameters for BloomFilter
+        client.write('INIT 8 1 2\n'); // Init command with parameters for
+        // BloomFilter
     });
 
     client.on('data', (data) => {
         console.log('Received: ' + data.toString());
         client.destroy(); // kill client after server's response
-       // sendURLsToBloomFilter(); // Proceed to send URLs after initialization
+       sendURLsToBloomFilter(); // Proceed to send URLs after initialization
     });
 
     client.on('close', () => {
@@ -32,10 +33,10 @@ function sendURLsToBloomFilter() {
     const client = new net.Socket();
     const urls = ['www.example.com0'];
     //change ip 192.168.64.128
-    client.connect(5555, "192.168.64.128", () => {
+    client.connect(5555, "192.168.75.128", () => {
         console.log('Connected to TCP server to send URLs');
         urls.forEach(url => {
-            client.write(`${url}`); // Send each URL with INSERT command
+            client.write(`INSERT ${url}`); // Send each URL with INSERT command
         });
     });
 
@@ -56,7 +57,7 @@ function sendURLsToBloomFilter() {
 // Start the server and initialize BloomFilter
 initializeBloomFilter();
 
- sendURLsToBloomFilter();
+
 
 
 app.use(bodyParser.json({ limit: '50mb' }));

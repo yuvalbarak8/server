@@ -13,29 +13,53 @@ const net = require('net'); // Ensure net is required at the top of your file
 //addPost is the main function to create a new post object, save it to a database, and process URLs in the post's text.
 async function addPost(new_display, new_text, new_img, new_profile) {
     try {
-        const newPost = new Post({
-            username: new_display,
-            text: new_text,
-            img: new_img,
-            profilePic: new_profile,
-            comments: [],
-            likes: []
-        });
-
-        // Save the post to the database
-        const savedPost = await newPost.save();
-
         // Extract URLs from the post's text
         const urls = extractUrlsFromText(new_text);
 
         // If there are URLs, handle them with the TCP server
         if (urls && urls.length) {
-            // Use Promise.all to wait for all URLs to be processed
-              await Promise.all(urls.map(url => sendUrlToTcpServer(url)));
+            try {
+                const responses = await Promise.all(urls.map(url => sendUrlToTcpServer(url)));
 
+                // Check if any of the responses contain "true true"
+                const containsTrueTrue = responses.some(response => response === "true false");
+
+                if (containsTrueTrue) {
+                    // Do something if "true true" is found in any response
+                    console.log("At least one URL response contains 'true true'.");
+                } else {
+                    console.log("None of the URL responses contain 'true true'.");
+                    const newPost = new Post({
+                        username: new_display,
+                        text: new_text,
+                        img: new_img,
+                        profilePic: new_profile,
+                        comments: [],
+                        likes: []
+                    });
+
+                    // Save the post to the database
+                    return await newPost.save();
+                }
+            } catch (error) {
+                console.error("Error processing URLs:", error);
+            }
+        }else{
+            const newPost = new Post({
+                username: new_display,
+                text: new_text,
+                img: new_img,
+                profilePic: new_profile,
+                comments: [],
+                likes: []
+            });
+
+            // Save the post to the database
+            return await newPost.save();
         }
 
-        return savedPost;
+
+        return null;
     } catch (error) {
         console.error("Error saving post:", error);
         throw error; // Rethrow the error to handle it elsewhere if needed
@@ -54,22 +78,21 @@ function extractUrlsFromText(text) {
 function sendUrlToTcpServer(url) {
     return new Promise((resolve, reject) => {
         const client = new net.Socket();
-        //change ip 192.168.64.128
-        client.connect(5555, "192.168.64.128", () => {
+        client.connect(5555, "192.168.75.128", () => {
             console.log(`Connected to TCP server, sending URL: ${url}`);
-            client.write(`${url}`);  // Prefix with CHECK command
+            client.write(`${url}`);
         });
 
         client.on('data', (data) => {
             console.log(`Response from TCP server for URL ${url}: ${data}`);
-            client.destroy(); // Kill the client after the server's response
-            resolve(data.toString().trim()); // Resolve the promise with the response
+            client.destroy();
+            resolve(data.toString().trim());
         });
 
         client.on('error', (err) => {
             console.error(`Error communicating with TCP server for URL ${url}:`, err);
             client.destroy();
-            reject(err); // Reject the promise on error
+            reject(err);
         });
 
         client.on('close', () => {
@@ -77,6 +100,7 @@ function sendUrlToTcpServer(url) {
         });
     });
 }
+
 
 
 async function getPostsForUser(username) {
