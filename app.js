@@ -3,11 +3,13 @@ const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session')
 const net = require('net');
-
+const customEnv = require('custom-env');
+customEnv.env(process.env.NODE_ENV, './config');
+const serverIP = process.env.TCP_SERVER_IP;
 // Initialize BloomFilter
 function initializeBloomFilter() {
     const client = new net.Socket();
-    client.connect(5555, "192.168.75.128", () => {
+    client.connect(5555, serverIP, () => {
         console.log('Connected to TCP server to initialize BloomFilter');
         client.write('INIT 8 1 2\n'); // Init command with parameters for
         // BloomFilter
@@ -31,12 +33,15 @@ function initializeBloomFilter() {
 //Send URLs to BloomFilter
 function sendURLsToBloomFilter() {
     const client = new net.Socket();
-    const urls = ['www.example.com0'];
+    const urls = process.env.URLS.split(','); // Split the string into an array
+    console.log(urls);
+    //const urls = ['www.example.com0','www.example.com1'];
     //change ip 192.168.64.128
-    client.connect(5555, "192.168.75.128", () => {
+    client.connect(5555, serverIP, () => {
         console.log('Connected to TCP server to send URLs');
         urls.forEach(url => {
             client.write(`INSERT ${url}`); // Send each URL with INSERT command
+            console.log('INSERT ${url}');
         });
     });
 
@@ -74,8 +79,7 @@ app.use(session({
     resave: false
 }))
 
-const customEnv = require('custom-env');
-customEnv.env(process.env.NODE_ENV, './config');
+
 
 const users = require('./routes/user');
 const posts = require('./routes/posts');

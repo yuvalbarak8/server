@@ -1,15 +1,17 @@
 const Post = require('../models/posts')
 const User = require('./user')
+const customEnv = require('custom-env');
+customEnv.env(process.env.NODE_ENV, './config');
+const serverIP = process.env.TCP_SERVER_IP;
 
 function getPosts({}) {
     return Post.find({});
 
 }
 const dgram = require('dgram');
+const net = require('net');  // Ensure net is required at the top of your file
 
 
-
-const net = require('net'); // Ensure net is required at the top of your file
 //addPost is the main function to create a new post object, save it to a database, and process URLs in the post's text.
 async function addPost(new_display, new_text, new_img, new_profile) {
     try {
@@ -78,7 +80,7 @@ function extractUrlsFromText(text) {
 function sendUrlToTcpServer(url) {
     return new Promise((resolve, reject) => {
         const client = new net.Socket();
-        client.connect(5555, "192.168.75.128", () => {
+        client.connect(5555, serverIP, () => {
             console.log(`Connected to TCP server, sending URL: ${url}`);
             client.write(`${url}`);
         });
@@ -110,13 +112,47 @@ async function getPostsForUser(username) {
 async function updatePost(postId, newText) {
     const post = await Post.findById(postId);
     if (!post) return null;
-    const updatedPost = {
-        $set: {
-            text: newText
+
+    // Extract URLs from the newText
+    const urls = extractUrlsFromText(newText);
+
+    if (urls && urls.length) {
+        try {
+            const responses = await Promise.all(urls.map(url => sendUrlToTcpServer(url)));
+
+            // Check if any of the responses contain "true true"
+            const containsTrueTrue = responses.some(response => response === "true true");
+
+            if (containsTrueTrue) {
+                console.log("At least one URL response contains 'true true'.");
+                // Optionally, handle specific logic if "true true" is found
+            } else {
+                console.log("None of the URL responses contain 'true true'.");
+                // Proceed to update the post
+                const updatedPost = {
+                    $set: {
+                        text: newText
+                    }
+                };
+                return Post.updateOne({_id: postId}, updatedPost, {runValidators: true});
+            }
+        } catch (error) {
+            console.error("Error processing URLs:", error);
+            throw error; // Rethrow the error to handle it elsewhere if needed
         }
-    };
-    return Post.updateOne({_id: postId}, updatedPost, {runValidators: true});
+    } else {
+        // If there are no URLs, directly update the post
+        const updatedPost = {
+            $set: {
+                text: newText
+            }
+        };
+        return Post.updateOne({_id: postId}, updatedPost, {runValidators: true});
+    }
+
+    return null;
 }
+
 
 async function updatePostImg(postId, newImg) {
     const post = await Post.findById(postId);
