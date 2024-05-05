@@ -1,7 +1,9 @@
 All API requests should be made to the base URL: http://localhost:12345/
 
-We already connected the react to the server. However, We put the build of the react in the public diractory and forgot to direct app.js to that specific place.
-In order to run it correctly, just change app.use(express.static('public')) in line 15 to public/build.
+How to run: there are 2 ways:
+1) use npm start on both the server and the react
+2) use npm build on the react, copy the build file to the public dir in the server. change app.js in line 15 to use 'public/build'. use npm start on the server and open localhost in the port written
+   in the config .env.local file (if there's problems with the port, change to one that works)
 
 User Endpoints:
 GET /users/:id
