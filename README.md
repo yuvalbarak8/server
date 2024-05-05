@@ -1,5 +1,8 @@
 All API requests should be made to the base URL: http://localhost:12345/
 
+We already connected the react to the server. However, We put the build of the react in the public diractory and forgot to direct app.js to that specific place.
+In order to run it correctly, just change app.use(express.static('public')) in line 15 to public/build.
+
 User Endpoints:
 GET /users/:id
 Retrieve the details of a user (name, picture, etc.) by their unique identifier.
