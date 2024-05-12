@@ -70,7 +70,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 const cors = require('cors');
 app.use(cors());
 
-app.use(express.static('public'))
+app.use(express.static('public/build'))
 app.use(session({
     secret: 'foo',
     saveUninitialized: false,
