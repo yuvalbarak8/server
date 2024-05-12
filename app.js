@@ -17,7 +17,7 @@ function initializeBloomFilter() {
 
     client.on('data', (data) => {
         console.log('Received: ' + data.toString());
-        client.destroy(); // kill client after server's response
+        client.end(); // kill client after server's response
        sendURLsToBloomFilter(); // Proceed to send URLs after initialization
     });
 
@@ -35,23 +35,21 @@ function sendURLsToBloomFilter() {
     const client = new net.Socket();
     const urls = process.env.URLS.split(','); // Split the string into an array
     console.log(urls);
-    //const urls = ['www.example.com0','www.example.com1'];
-    //change ip 192.168.64.128
     client.connect(5555, serverIP, () => {
         console.log('Connected to TCP server to send URLs');
         urls.forEach(url => {
-            client.write(`INSERT ${url}`); // Send each URL with INSERT command
+            client.write(` INSERT ${url}`); // Send each URL with INSERT command
             console.log('INSERT ${url}');
         });
     });
 
     client.on('data', (data) => {
         console.log('Received: ' + data.toString());
+        client.end()
     });
 
     client.on('end', () => {
         console.log('All URLs sent, server closed connection');
-        client.destroy();
     });
 
     client.on('error', (err) => {
