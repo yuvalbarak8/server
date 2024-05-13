@@ -11,7 +11,7 @@ function initializeBloomFilter() {
     const client = new net.Socket();
     client.connect(5555, serverIP, () => {
         console.log('Connected to TCP server to initialize BloomFilter');
-        client.write('INIT 8 1 2\n'); // Init command with parameters for
+        client.write(process.env.INIT); // Init command with parameters for
         // BloomFilter
     });
 
@@ -39,7 +39,7 @@ function sendURLsToBloomFilter() {
         console.log('Connected to TCP server to send URLs');
         urls.forEach(url => {
             client.write(` INSERT ${url}`); // Send each URL with INSERT command
-            console.log('INSERT ${url}');
+            console.log(`INSERT ${url}`);
         });
     });
 
@@ -70,7 +70,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 const cors = require('cors');
 app.use(cors());
 
-app.use(express.static('public'))
+app.use(express.static('public/build'))
 app.use(session({
     secret: 'foo',
     saveUninitialized: false,
