@@ -27,14 +27,14 @@ async function getFriendPosts(req, res) {
 }
 
 async function createPost(req, res) {
-   // console.log(req.body);
+    // console.log(req.body);
     const display = String(req.body.display);
     const text = String(req.body.text);
     const img = String(req.body.img);
     const profile = String(req.body.profile)
 
     const response = await posts.addPost(display, text, img, profile);
-  //  console.log(response);
+    //  console.log(response);
     res.json(response);
 }
 
@@ -47,13 +47,14 @@ async function editPost(req, res) {
     if (text !== "") {
         newPost = await posts.updatePost(id, text)
     }
-    if (img !== "") {
-        newPost = await posts.updatePostImg(id, img)
+    if (newPost) {
+        if (img !== "") {
+            newPost = await posts.updatePostImg(id, img)
+        }
     }
-    if (!newPost)
-        return res.status(404).json({error: ['post not found']})
     res.json(newPost)
 }
+
 //delete users/:id/posts/:pid
 async function deletePostById(req, res) {
     const postId = req.params.pid
@@ -63,12 +64,13 @@ async function deletePostById(req, res) {
     }
     res.json(post)
 }
+
 //post posts/:pid/likes
 async function clickLike(req, res) {
     const post = await posts.getPost(req.params.pid)
     const liker = req.body.id
-    const userLikedPost = await  User.getUserById(liker);
-    if(posts.isLiked(post, userLikedPost)) {
+    const userLikedPost = await User.getUserById(liker);
+    if (posts.isLiked(post, userLikedPost)) {
         res.json(await posts.unlike(post, userLikedPost._id))
     } else {
         res.json(await posts.like(post, userLikedPost._id))

@@ -1,5 +1,4 @@
 const Post = require('../models/posts')
-const User = require('./user')
 const customEnv = require('custom-env');
 customEnv.env(process.env.NODE_ENV, './config');
 const serverIP = process.env.TCP_SERVER_IP;
@@ -8,7 +7,7 @@ function getPosts({}) {
     return Post.find({});
 
 }
-const dgram = require('dgram');
+
 const net = require('net');  // Ensure net is required at the top of your file
 
 
@@ -17,51 +16,29 @@ async function addPost(new_display, new_text, new_img, new_profile) {
     try {
         // Extract URLs from the post's text
         const urls = extractUrlsFromText(new_text);
-
         // If there are URLs, handle them with the TCP server
         if (urls && urls.length) {
             try {
                 const responses = await Promise.all(urls.map(url => sendUrlToTcpServer(url)));
-
-                // Check if any of the responses contain "true true"
                 const containsTrueTrue = responses.some(response => response === "true true");
-
                 if (containsTrueTrue) {
-                    // Do something if "true true" is found in any response
                     console.log("At least one URL response contains 'true true'.");
-                } else {
-                    console.log("None of the URL responses contain 'true true'.");
-                    const newPost = new Post({
-                        username: new_display,
-                        text: new_text,
-                        img: new_img,
-                        profilePic: new_profile,
-                        comments: [],
-                        likes: []
-                    });
-
-                    // Save the post to the database
-                    return await newPost.save();
+                    return null;
                 }
             } catch (error) {
                 console.error("Error processing URLs:", error);
             }
-        }else{
-            const newPost = new Post({
-                username: new_display,
-                text: new_text,
-                img: new_img,
-                profilePic: new_profile,
-                comments: [],
-                likes: []
-            });
-
-            // Save the post to the database
-            return await newPost.save();
         }
-
-
-        return null;
+        const newPost = new Post({
+            username: new_display,
+            text: new_text,
+            img: new_img,
+            profilePic: new_profile,
+            comments: [],
+            likes: []
+        });
+        // Save the post to the database
+        return await newPost.save();
     } catch (error) {
         console.error("Error saving post:", error);
         throw error; // Rethrow the error to handle it elsewhere if needed
@@ -70,8 +47,7 @@ async function addPost(new_display, new_text, new_img, new_profile) {
 
 function extractUrlsFromText(text) {
     const urlRegex = /(\bhttps?:\/\/[^\s\n]+|\bwww\.[^\s\n]+)/g;
-    const urls = text.match(urlRegex);
-    return urls;
+    return text.match(urlRegex);
 }
 
 
@@ -82,12 +58,12 @@ function sendUrlToTcpServer(url) {
         const client = new net.Socket();
         client.connect(5555, serverIP, () => {
             console.log(`Connected to TCP server, sending URL: ${url}`);
-            client.write(`${url}`);
+            client.write(`CHECK ${url}`);
         });
 
         client.on('data', (data) => {
             console.log(`Response from TCP server for URL ${url}: ${data}`);
-            client.destroy();
+            client.end();
             resolve(data.toString().trim());
         });
 
@@ -104,7 +80,6 @@ function sendUrlToTcpServer(url) {
 }
 
 
-
 async function getPostsForUser(username) {
     return Post.find({username: username});
 }
@@ -112,45 +87,32 @@ async function getPostsForUser(username) {
 async function updatePost(postId, newText) {
     const post = await Post.findById(postId);
     if (!post) return null;
-
     // Extract URLs from the newText
     const urls = extractUrlsFromText(newText);
-
     if (urls && urls.length) {
         try {
             const responses = await Promise.all(urls.map(url => sendUrlToTcpServer(url)));
-
             // Check if any of the responses contain "true true"
             const containsTrueTrue = responses.some(response => response === "true true");
-
             if (containsTrueTrue) {
                 console.log("At least one URL response contains 'true true'.");
+                return null;
                 // Optionally, handle specific logic if "true true" is found
             } else {
                 console.log("None of the URL responses contain 'true true'.");
-                // Proceed to update the post
-                const updatedPost = {
-                    $set: {
-                        text: newText
-                    }
-                };
-                return Post.updateOne({_id: postId}, updatedPost, {runValidators: true});
             }
         } catch (error) {
             console.error("Error processing URLs:", error);
             throw error; // Rethrow the error to handle it elsewhere if needed
         }
-    } else {
         // If there are no URLs, directly update the post
-        const updatedPost = {
-            $set: {
-                text: newText
-            }
-        };
-        return Post.updateOne({_id: postId}, updatedPost, {runValidators: true});
     }
-
-    return null;
+    const updatedPost = {
+        $set: {
+            text: newText
+        }
+    };
+    return Post.updateOne({_id: postId}, updatedPost, {runValidators: true});
 }
 
 
@@ -168,6 +130,7 @@ async function updatePostImg(postId, newImg) {
 async function deletePost(id) {
     return Post.findByIdAndDelete(id)
 }
+
 function isLiked(post, liker) {
     return post.likes.includes(liker._id)
 }
@@ -186,9 +149,11 @@ async function unlike(post, username) {
 function getPost(id) {
     return Post.findById(id);
 }
+
 function getLikes(post) {
     return post.likes
 }
+
 module.exports = {
     getPosts,
     addPost,
