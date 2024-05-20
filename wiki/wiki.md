@@ -9,6 +9,8 @@ cmake --build build
 ![run tcp 1.png](run%20tcp%201.png)
 ![run tcp 2.png](run%20tcp%202.png)
 ![run tcp 3.png](run%20tcp%203.png)
+another way to run it is by using the version in the docker:
+
 after you ran it, you need to run  the server itself. do it by the command "npm start"
 ![run web.png](run%20web.png)
 sometimes, there's a problem with specific port. To solve the problem, go to directory config.
