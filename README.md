@@ -1,4 +1,6 @@
-All API requests should be made to the base URL: http://localhost:12345/
+All API requests should be made to the base URL: http://localhost:8989/
+
+to run the server you need to run the tcp first.
 
 User Endpoints:
 GET /users/:id
@@ -38,12 +40,12 @@ Remove a friend or cancel a pending friendship request. This operation is availa
 
 
 Yedidya's Contribution: 
-Yedidia took care of upgrading the users properly, posts functions and adjusting to a the client website.
+Yedidia handled the creation of the tcp server.
 
 Yuval's Contribution:
-Yuval took care of adjusting the server to Android.
+Yuval took care of handling the client side of the protocol.
 
 Itamar's Contribution:
-Created the base for the server and working with MongoDB, creating users.
+Connected the tcp server to the nodjs.
 
 
