@@ -61,9 +61,9 @@ post contain bad link in android:
 ![post contain bad link android](https://github.com/yuvalbarak8/server/assets/75585109/57a5e4f7-a557-465e-836e-d2610b3a0fa5)
 invalid password android:
 ![invalid password android](https://github.com/yuvalbarak8/server/assets/75585109/0737b55c-88f0-4600-9240-fb6f9a0395d7)
-edit post android:
+edit post android
 ![edit post android](https://github.com/yuvalbarak8/server/assets/75585109/7c6f9a60-07a3-429d-b416-95af3ef6acef)
-example that show post contain bad link android is blocked:
+example that show post contain bad link android is blocked
 ![post contain bad link android](https://github.com/yuvalbarak8/server/assets/75585109/058477e9-1c06-4406-9a43-ad5a19fabf30)
 
 
