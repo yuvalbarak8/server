@@ -6,6 +6,8 @@ you can do it with cmake commands like the pictures:
 cmake -B build -S .
 cmake --build build
 ./build/main
+![another post contain bad link android](https://github.com/yuvalbarak8/server/assets/75585109/ce08a0d5-b901-4511-9d4d-2770e0239495)
+
 ![run tcp 1.png](run%20tcp%201.png)
 ![run tcp 2.png](run%20tcp%202.png)
 ![run tcp 3.png](run%20tcp%203.png)
