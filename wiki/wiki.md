@@ -52,25 +52,19 @@ once you login, you will see this
 ![feed android.jpg](feed%20android.jpg)
 ![feed android post.jpg](feed%20android%20post.jpg)
 ![posts android.jpg](posts%20android.jpg)
-another registration example android
-
-![registration example android](https://github.com/yuvalbarak8/server/assets/75585109/3bfe1e35-e74a-4a15-9db3-b2e538fde7b8)
-bad registration example android:
-
-![bad registration example android](https://github.com/yuvalbarak8/server/assets/75585109/f19f3c60-b620-4fd7-8833-88f771236f1a)
-post contain bad link in android:
+-post contain bad link in android:
 
 ![post contain bad link android](https://github.com/yuvalbarak8/server/assets/75585109/57a5e4f7-a557-465e-836e-d2610b3a0fa5)
-invalid password android:
+-invalid password android:
 
 ![invalid password android](https://github.com/yuvalbarak8/server/assets/75585109/0737b55c-88f0-4600-9240-fb6f9a0395d7)
-edit post android
+-edit post android
 
 ![edit post android](https://github.com/yuvalbarak8/server/assets/75585109/7c6f9a60-07a3-429d-b416-95af3ef6acef)
-example that show post contain bad link android is blocked
+-example that show post contain bad link android is blocked
 
 ![post contain bad link android](https://github.com/yuvalbarak8/server/assets/75585109/058477e9-1c06-4406-9a43-ad5a19fabf30)
 
-this is the feed and the posts, you can do everything there that you can in the web
+-this is the feed and the posts, you can do everything there that you can in the web
 
 
